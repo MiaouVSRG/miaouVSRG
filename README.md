@@ -49,6 +49,6 @@ juste tu suis les setup fin t'es pas con j'pense
 	>
 	```
 
-4. Quand *in the CLI tool*, écrivez la commande `play` pour build et lancer la lastest version du jeu.  
+4. Quand vous etes dans le CLI tools, écrivez la commande `play` pour build et lancer la lastest version du jeu.  
    ça va créer un build du jeu sur `miaouVSRG/GAME` où il peut etre lancer directement. 
 
