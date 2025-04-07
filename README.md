@@ -13,7 +13,7 @@ Globalement tu peux importer les charts de stepmania,osu,etterna et quaver pour 
 
 
 
-<h2 align="right">😼 Jouer a le jeu 😼</h2>
+<h2 align="left">😼 Jouer a le jeu 😼</h2>
 
 On fera un des guides et un wiki soon probablement si toute fois on décide de foutre le projet public (ce qui m'etonnerais)  
 Sinon ya le [wiki d'interlude](https://www.yavsrg.net/interlude/wiki) c'est sensiblemet la meme chose :3 
