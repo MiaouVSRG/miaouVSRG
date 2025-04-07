@@ -20,7 +20,7 @@ Sinon ya le [wiki d'interlude](https://www.yavsrg.net/interlude/wiki) c'est sens
 <br/>
 **Sur mac** - Allez vous faire foutre (réellement)
 
-<h2 align="center">🧱 Building Interlude</h2>
+<h2 align="center">🧱 Fabriker MiaouVSRG 🧱</h2>
 
 > [!Note]
 >
@@ -49,11 +49,6 @@ juste tu suis les setup fin t'es pas con j'pense
 	>
 	```
 
-4. When *in the CLI tool*, run the `play` command to build and play the latest version.  
-    This will create a build of the game under `YAVSRG/GAME` which can be run directly if you prefer.  
-    To update your game when a new version comes out, run the CLI tool again, then run `update`.
-	
-**If a step isn't working/you are stuck, get assistance in [the discord](https://yavsrg.net/discord)**
+4. Quand *in the CLI tool*, écrivez la commande `play` pour build et lancer la lastest version du jeu.  
+   ça va créer un build du jeu sur `miaouVSRG/GAME` où il peut etre lancer directement. 
 
-You can delete the entire YAVSRG folder to entirely remove the game and all data from your system.
-<img src="https://i.ibb.co/cXr93sQb/20250404-215447.jpg" align="left" height="800">
