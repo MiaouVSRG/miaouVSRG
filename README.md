@@ -56,9 +56,9 @@ juste tu suis les setup fin t'es pas con j'pense
 **If a step isn't working/you are stuck, get assistance in [the discord](https://yavsrg.net/discord)**
 
 You can delete the entire YAVSRG folder to entirely remove the game and all data from your system.
-<img src="https://ibb.co/Kzrgh8WN.png" align="left" height="400">
-<img src="https://ibb.co/Kzrgh8WN.png" align="left" height="400">
-<img src="https://ibb.co/Kzrgh8WN.png" align="left" height="400">
-<img src="https://ibb.co/Kzrgh8WN.png" align="left" height="400">
-<img src="https://ibb.co/Kzrgh8WN.png" align="left" height="400">
+<img src="https://ibb.co/Kzrgh8WN" align="left" height="400">
+<img src="https://ibb.co/Kzrgh8WN" align="left" height="400">
+<img src="https://ibb.co/Kzrgh8WN" align="left" height="400">
+<img src="https://ibb.co/Kzrgh8WN" align="left" height="400">
+<img src="https://ibb.co/Kzrgh8WN" align="left" height="400">
 
