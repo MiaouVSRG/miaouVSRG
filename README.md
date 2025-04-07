@@ -7,13 +7,13 @@ Bah en gros c'est un VSRG (vertical scrolling rhythm game ou Jeu de rhythme a d�
 <br/>
 Globalement tu peux importer les charts de stepmania,osu,etterna et quaver pour les jouer sur le client, tu peux aussi importer ton skin osu et faire des modifs nativement dans le client donc c'est cool nan ?
 <br/>
-<img src="https://media1.tenor.com/m/DtD4LZbctTIAAAAC/tamm-cat.jpg" align="center" height="100">
+
 <br/>
 <br/>
 
 
 <h2 align="center">🐈Jouer a le jeu !1!11!🐈</h2>
-
+<img src="https://media1.tenor.com/m/DtD4LZbctTIAAAAC/tamm-cat.jpg" align="right" height="100">
 On fera un des guides et un wiki soon probablement si toute fois on décide de foutre le projet public (ce qui m'etonnerais)  
 Sinon ya le [wiki d'interlude](https://www.yavsrg.net/interlude/wiki) c'est sensiblemet la meme chose :3 
 
