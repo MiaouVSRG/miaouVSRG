@@ -4,7 +4,7 @@
 
 Bah en gros c'est un VSRG (vertical scrolling rhythm game ou Jeu de rhythme a défilement vertical) basé sur Interlude un projet deja existant ([yavsrg.net](https://www.yavsrg.net)).
 
-Visit [yavsrg.net](https://www.yavsrg.net) to read more about this project and its features.
+<br/>
 
 
 <br/>
