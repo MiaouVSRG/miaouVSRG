@@ -1,4 +1,4 @@
-<img src="https://github.com/babibelbleu/miaouVSRG/blob/master/interlude/src/Resources/default/Textures/logo%5B1x1%5D.png" align="left" height="400">
+<img src="https://github.com/babibelbleu/miaouVSRG/blob/master/interlude/src/Resources/default/Textures/logo%5B1x1%5D.png" align="left" height="350">
 
 ### MiaouVSRG c koi ??
 
