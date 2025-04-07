@@ -4,6 +4,7 @@
 
 Bah en gros c'est un VSRG (vertical scrolling rhythm game ou Jeu de rhythme a défilement vertical) dev par **Babil** et **Kyun** basé sur Interlude qui est un projet deja existant créé par percyqaz([yavsrg.net](https://www.yavsrg.net)).
 <br/>
+<br/>
 Globalement tu peux importer les charts de stepmania,osu,etterna et quaver pour les jouer sur le client, tu peux aussi importer ton skin osu et faire des modifs nativement dans le client donc c'est cool nan ?
 <br/>
 <img src="https://media1.tenor.com/m/DtD4LZbctTIAAAAC/tamm-cat.jpg" align="center" height="100">
