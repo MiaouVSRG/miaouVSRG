@@ -1,11 +1,15 @@
 <img src="https://github.com/babibelbleu/miaouVSRG/blob/master/interlude/src/Resources/default/Textures/logo%5B1x1%5D.png" align="left" height="400">
 
-###MiaouVSRG c koi ??
+### MiaouVSRG c koi ??
 
 Bah en gros c'est un VSRG (vertical scrolling rhythm game ou Jeu de rhythme a défilement vertical) basé sur Interlude un projet deja existant ([yavsrg.net](https://www.yavsrg.net)).
 
 Visit [yavsrg.net](https://www.yavsrg.net) to read more about this project and its features.
 
+
+
+<br/>
+<br/>
 <br/>
 
 <h2 align="center">🎮 Playing the game</h2>
