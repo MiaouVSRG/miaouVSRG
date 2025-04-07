@@ -1,4 +1,4 @@
-<img src="https://github.com/babibelbleu/miaouVSRG/blob/master/interlude/src/Resources/default/Textures/logo%5B1x1%5D.png" align="left" height="350">
+<img src="https://github.com/babibelbleu/miaouVSRG/blob/master/interlude/src/Resources/default/Textures/logo%5B1x1%5D.png" align="left" height="400">
 
 ### MiaouVSRG c koi ??
 
@@ -7,13 +7,11 @@ Bah en gros c'est un VSRG (vertical scrolling rhythm game ou Jeu de rhythme a d�
 <br/>
 Globalement tu peux importer les charts de stepmania,osu,etterna et quaver pour les jouer sur le client, tu peux aussi importer ton skin osu et faire des modifs nativement dans le client donc c'est cool nan ?
 <br/>
-
 <br/>
 <br/>
-
-
-
-<h2>😼 Jouer a le jeu 😼</h2>
+<br/>
+<br/>
+<h2 align="center">😼 Jouer a le jeu 😼</h2>
 
 On fera un des guides et un wiki soon probablement si toute fois on décide de foutre le projet public (ce qui m'etonnerais)  
 Sinon ya le [wiki d'interlude](https://www.yavsrg.net/interlude/wiki) c'est sensiblemet la meme chose :3 
