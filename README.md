@@ -1,4 +1,4 @@
-<img src="https://github.com/YAVSRG/YAVSRG/assets/21290233/f3a88ac6-431a-46a1-9351-95266f30fe70.png" align="left" height="240">
+<img src="https://github.com/babibelbleu/miaouVSRG/blob/master/interlude/src/Resources/default/Textures/logo%5B1x1%5D.png" align="left" height="240">
 
 ### What is YAVSRG?
 
