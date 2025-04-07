@@ -54,3 +54,4 @@ juste tu suis les setup fin t'es pas con j'pense
 4. Quand vous etes dans le CLI tools, écrivez la commande `play` pour build et lancer la lastest version du jeu.  
    ça va créer un build du jeu sur `miaouVSRG/GAME` où il peut etre lancer directement. 
 
+<img src="https://i.ibb.co/cXr93sQb/20250404-215447.jpg" align="left" height="800">
