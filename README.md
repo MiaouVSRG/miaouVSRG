@@ -24,25 +24,25 @@ Sinon ya le [wiki d'interlude](https://www.yavsrg.net/interlude/wiki) c'est sens
 
 > [!Note]
 >
-> If you just want to play the game on Windows or Linux, **you do *not* need to do this**, instead get the game by downloading the latest release from the site
+> caca
 
-1. Install [Git](https://git-scm.com/downloads), and [the .NET 9 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/9.0)  
-Follow the install instructions for both of these for your platform
+1.Installer [Git](https://git-scm.com/downloads), et [le SDK .NET 9](https://dotnet.microsoft.com/en-us/download/dotnet/9.0)  
+juste tu suis les setup fin t'es pas con j'pense
 
-2. Set up the repository
+2. Setup le repository
 
-	To do this via a terminal:
+	fait ça dans un terminal:
 	```bash
-	# Navigate to somewhere you want to store the interlude codebase - Don't forget --recurse-submodules!
-	git clone https://github.com/YAVSRG/YAVSRG.git --recurse-submodules
+	# va a l'endroit ou tu veux télécharger le code - n'oublie pas --recurse-submodules!
+	git clone https://github.com/babibelbleu/miaouVSRG.git --recurse-submodules
 	```
 	
-3. Run the CLI tool
+3. run le CLI tool
 	```bash
-	cd YAVSRG/tools
+	cd miaouVSRG/tools
 	dotnet run
 	```
-	You will see in your terminal something like
+	Tu devrais voir dans ton terminal un truc du genre
 	```
 	== YAVSRG CLI Tools ==
 	type 'help' for a list of commands, or help <command> for details
