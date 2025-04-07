@@ -14,7 +14,7 @@ Globalement tu peux importer les charts de stepmania,osu,etterna et quaver pour 
 <h2 align="center">🐈Jouer a le jeu !1!11!🐈</h2>
 
 On fera un des guides et un wiki soon probablement si toute fois on décide de foutre le projet public (ce qui m'etonnerais)  
-You can also [check out the wiki here](https://www.yavsrg.net/interlude/wiki) in your browser!
+Sinon ya le wiki d'interlude c'est quasiment la meme chose[check out the wiki here](https://www.yavsrg.net/interlude/wiki)
 
 **Sur windows et linux** - Démerdez vous (m'enfin faut compiler et tout tsais)
 <br/>
