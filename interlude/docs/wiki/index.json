@@ -1,0 +1,63 @@
+{
+    "Features": [{
+        "Filename": "level_select",
+        "Folder": "Features",
+        "Title": "Level select"
+    }, {
+        "Filename": "rulesets",
+        "Folder": "Features",
+        "Title": "Rulesets"
+    }],
+    "Getting started": [{
+        "Filename": "adding_songs",
+        "Folder": "Getting started",
+        "Title": "Adding songs"
+    }, {
+        "Filename": "how_to_play",
+        "Folder": "Getting started",
+        "Title": "How to play"
+    }],
+    "Migrating": [{
+        "Filename": "migrate_osu_mania",
+        "Folder": "Migrating",
+        "Title": "osu!mania"
+    }, {
+        "Filename": "migrate_quaver",
+        "Folder": "Migrating",
+        "Title": "Quaver"
+    }, {
+        "Filename": "migrate_sm_etterna",
+        "Folder": "Migrating",
+        "Title": "StepMania/Etterna"
+    }],
+    "Performance": [{
+        "Filename": "performance_diagnosis",
+        "Folder": "Performance",
+        "Title": "Introduction"
+    }, {
+        "Filename": "performance_input",
+        "Folder": "Performance",
+        "Title": "Input"
+    }, {
+        "Filename": "performance_recording",
+        "Folder": "Performance",
+        "Title": "Recording"
+    }, {
+        "Filename": "performance_unlimited_fps",
+        "Folder": "Performance",
+        "Title": "Advanced settings"
+    }],
+    "Skinning": [{
+        "Filename": "skinning",
+        "Folder": "Skinning",
+        "Title": "Introduction"
+    }, {
+        "Filename": "skinning_huds",
+        "Folder": "Skinning",
+        "Title": "HUD layouts"
+    }, {
+        "Filename": "skinning_noteskins",
+        "Folder": "Skinning",
+        "Title": "Noteskins"
+    }]
+}

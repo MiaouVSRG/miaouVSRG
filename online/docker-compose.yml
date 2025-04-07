@@ -1,0 +1,14 @@
+version: "3.9"
+services:
+    server:
+        container_name: server
+        build:
+            context: ..
+            dockerfile: ./online/server/dockerfile
+        restart: unless-stopped
+        ports:
+            - 32767:32767
+            - 443:443
+        volumes:
+            - ./secrets:/docker_root/secrets
+            - ./data:/docker_root/data

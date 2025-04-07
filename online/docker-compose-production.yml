@@ -1,0 +1,12 @@
+version: "3.9"
+services:
+    server:
+        container_name: server
+        image: registry.digitalocean.com/yavsrg/interlude-web-server
+        restart: unless-stopped
+        ports:
+            - 32767:32767
+            - 443:443
+        volumes:
+            - ./secrets:/docker_root/secrets
+            - ./data:/docker_root/data

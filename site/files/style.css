@@ -1,0 +1,189 @@
+@font-face {
+    font-family: 'akrobatblack';
+    src: url('akrobat-black-webfont.woff2') format('woff2'),
+         url('akrobat-black-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+:root {
+    --shadow-1: #050308;
+    --shadow-2: #0a0911;
+    --shadow-2-3a: #0a0911DD;
+    --shadow-2-2a: #0a0911AA;
+    --shadow-2-1a: #0a091177;
+    --cyan: #1d869d;
+    --cyan-2: #0b6479;
+    --cyan-accent: #43e0ef;
+    --cyan-shadow: #084251;
+    --cyan-shadow-2a: #084251AA;
+    --cyan-shadow-0a: #08425100;
+    --cyan-shadow-dark: #042125;
+    --green-accent: #43ef70;
+    --green: #1d9d4b;
+    --green-shadow: #0c4b24;
+    --blue-accent: #0032ff;
+    --blue: #001696;
+    --blue-shadow: #000450;
+    --red-accent: #ef5d57;
+    --red: #9c3736;
+    --red-shadow: #6e190d;
+    --yellow-accent: #ffe670;
+}
+
+.akrobat {
+    font-family: 'akrobatblack';
+    color: white;
+}
+
+p {
+    color: #e5e6ec;
+}
+
+li {
+    color: #e5e6ec;
+}
+
+.text-2xl {
+    text-shadow: var(--shadow-2-2a) 1.5px 1.5px 0;
+}
+
+.text-3xl {
+    text-shadow: var(--shadow-2-2a) 2px 2px 0;
+}
+
+.text-4xl {
+    text-shadow: var(--shadow-2-2a) 3px 3px 0;
+}
+
+.text-5xl {
+    text-shadow: var(--shadow-2-2a) 4px 4px 0;
+}
+
+.text-6xl {
+    text-shadow: var(--shadow-2-2a) 5px 5px 0;
+}
+
+.text-green {
+    color: var(--green-accent);
+}
+
+.cool-shadow {
+    box-shadow: var(--shadow-2-3a) 5px 5px 0;
+}
+
+.button {
+    background-color: var(--cyan-2);
+    border-radius: 5px;
+    box-shadow: var(--shadow-2-3a) 5px 5px 0;
+}
+
+.button:hover {
+    background-color: var(--cyan);
+    color: var(--yellow-accent);
+}
+
+.button-dark:hover {
+    background-color: var(--cyan-shadow);
+}
+
+.hang-button {
+    background-color: var(--shadow-2-1a);
+}
+
+.hang-button:hover {
+    background-color: var(--shadow-2-1a);
+    color: var(--yellow-accent);
+}
+
+.background-1 {
+    background-color: var(--cyan-2);
+}
+
+.background-2 {
+    background-color: var(--cyan-shadow);
+}
+
+.background-3 {
+    background-color: var(--cyan-shadow-dark);
+}
+
+.frame {
+    background-color: var(--cyan);
+    border-radius: 5px;
+    border: 5px solid var(--cyan-accent);
+    box-shadow: var(--shadow-2-3a) 5px 5px 0;
+}
+
+.frame-darker {
+    background-color: var(--cyan-shadow);
+    border-radius: 5px;
+    border: 5px solid var(--cyan-accent);
+    box-shadow: var(--shadow-2-3a) 5px 5px 0;
+}
+
+.frame-green {
+    background-color: var(--green);
+    border-radius: 5px;
+    border: 5px solid var(--green-accent);
+    box-shadow: var(--shadow-2-3a) 5px 5px 0;
+}
+
+.frame-red {
+    background-color: var(--red);
+    border-radius: 5px;
+    border: 5px solid var(--red-accent);
+    box-shadow: var(--shadow-2-3a) 5px 5px 0;
+}
+
+.header {
+    background-color: var(--cyan);
+    border-bottom: 5px solid var(--cyan-accent);
+}
+
+.footer {
+    background-color: var(--cyan);
+    border-top: 5px solid var(--cyan-accent);
+}
+
+.overlay {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-image: linear-gradient(185deg, #00000000 55%, #28283399 80%);
+}
+
+hr {
+    width: 95%;
+    border-top: 5px solid #ffffff;
+    box-shadow: var(--shadow-2-1a) 5px 5px 0;
+    margin: 20px auto
+}
+
+.feather {
+    width: 30px;
+    height: 30px;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    filter: drop-shadow(2px 2px 0 var(--shadow-2-2a));
+    fill: none;
+}
+
+a {
+    transition: 0.2s;
+}
+
+a:hover {
+    color: var(--yellow-accent);
+    scale: 1.1;
+    transition: 0.2s;
+}
+
+.sticky-header {
+    background: var(--cyan);
+    border-bottom: 5px solid var(--cyan-accent);
+}
