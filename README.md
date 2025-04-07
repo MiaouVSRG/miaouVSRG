@@ -1,10 +1,8 @@
 <img src="https://github.com/babibelbleu/miaouVSRG/blob/master/interlude/src/Resources/default/Textures/logo%5B1x1%5D.png" align="left" height="400">
 
-### What is YAVSRG?
+###MiaouVSRG c koi ??
 
-YET ANOTHER VERTICALLY SCROLLING RHYTHM GAME is my collection of rhythm game projects full of the features and ideas I think make games of this genre fun to play.
-
-The project is centred around my custom rhythm game client, **Interlude**, and the tooling around it.
+Bah en gros c'est un VSRG (vertical scrolling rhythm game ou Jeu de rhythme a défilement vertical) basé sur Interlude un projet deja existant ([yavsrg.net](https://www.yavsrg.net)).
 
 Visit [yavsrg.net](https://www.yavsrg.net) to read more about this project and its features.
 
