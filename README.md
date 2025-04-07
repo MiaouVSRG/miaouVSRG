@@ -7,7 +7,7 @@ Bah en gros c'est un VSRG (vertical scrolling rhythm game ou Jeu de rhythme a d√
 Visit [yavsrg.net](https://www.yavsrg.net) to read more about this project and its features.
 
 
-
+<br/>
 <br/>
 <br/>
 <br/>
