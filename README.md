@@ -2,7 +2,7 @@
 
 ### MiaouVSRG c koi ??
 
-Bah en gros c'est un VSRG (vertical scrolling rhythm game ou Jeu de rhythme a défilement vertical) basé sur Interlude un projet deja existant ([yavsrg.net](https://www.yavsrg.net)).
+Bah en gros c'est un VSRG (vertical scrolling rhythm game ou Jeu de rhythme a défilement vertical) basé sur Interlude qui est un projet deja existant créé par percyqaz([yavsrg.net](https://www.yavsrg.net)).
 <br/>
 <img src="https://media1.tenor.com/m/DtD4LZbctTIAAAAC/tamm-cat.jpg" align="center" height="100">
 <br/>
@@ -11,13 +11,14 @@ Bah en gros c'est un VSRG (vertical scrolling rhythm game ou Jeu de rhythme a d�
 <br/>
 <br/>
 
-<h2 align="center">🎮 Playing the game</h2>
+<h2 align="center">Jouer a le jeu !1!11!</h2>
 
 Various player guides, including a wiki, are built into the game to help you get started, especially if you're coming from another popular rhythm game client.  
 You can also [check out the wiki here](https://www.yavsrg.net/interlude/wiki) in your browser!
 
-**On Windows and Linux** - Download the latest release [from the website](https://www.yavsrg.net), extract it and play!  
-**On macOS** - Not officially supported, to try possibly unstable builds see instructions below
+**Sur windows et linux** - Démerdez vous (m'enfin faut compiler et tout tsais)
+<br/>
+**Sur mac** - Allez vous faire foutre (réellement)
 
 <h2 align="center">🧱 Building Interlude</h2>
 
