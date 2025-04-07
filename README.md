@@ -11,9 +11,9 @@ Globalement tu peux importer les charts de stepmania,osu,etterna et quaver pour 
 <br/>
 <br/>
 
-
-<h2 align="center">🐈Jouer a le jeu !1!11!🐈</h2>
 <img src="https://media1.tenor.com/m/DtD4LZbctTIAAAAC/tamm-cat.jpg" align="right" height="100">
+<h2 align="center">🐈Jouer a le jeu !1!11!🐈</h2>
+
 On fera un des guides et un wiki soon probablement si toute fois on décide de foutre le projet public (ce qui m'etonnerais)  
 Sinon ya le [wiki d'interlude](https://www.yavsrg.net/interlude/wiki) c'est sensiblemet la meme chose :3 
 
