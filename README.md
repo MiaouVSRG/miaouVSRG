@@ -3,7 +3,7 @@
 ### MiaouVSRG c koi ??
 
 Bah en gros c'est un VSRG (vertical scrolling rhythm game ou Jeu de rhythme a défilement vertical) basé sur Interlude un projet deja existant ([yavsrg.net](https://www.yavsrg.net)).
-<img src="https://tenor.com/fr/search/cat-giving-thumbs-up-gifs.gif" align="center" height="50">
+<img src="https://media1.tenor.com/m/DtD4LZbctTIAAAAC/tamm-cat.gif" align="center" height="50">
 <br/>
 <br/>
 <br/>
