@@ -161,7 +161,7 @@ type MainMenuScreen() =
 
                 AngledButton(
                     Icons.MESSAGE_SQUARE + " " + %"menu.discord",
-                    (fun () -> open_url ("https://discord.gg/tA22tWR")),
+                    (fun () -> open_url ("https://discord.gg/mVcjvvBzbQ")),
                     Palette.DARK_100
                 )
                     .Position(Position.SliceB(AngledButton.HEIGHT).SliceR(300.0f).TranslateX(-325.0f))
