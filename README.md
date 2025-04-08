@@ -34,7 +34,7 @@ juste tu suis les setup fin t'es pas con j'pense
 	fait ça dans un terminal:
 	```bash
 	# va a l'endroit ou tu veux télécharger le code - n'oublie pas --recurse-submodules!
-	git clone https://github.com/babibelbleu/miaouVSRG.git --recurse-submodules
+	git clone https://github.com/MiaouVSRG/miaouVSRG.git --recurse-submodules
 	```
 	
 3. run le CLI tool
