@@ -117,7 +117,7 @@ module PracticeScreen =
                 base.OnEnter(p)
                 Song.seek state.PracticePoint.Value
                 Song.pause ()
-                DiscordRPC.playing ("Practice mode", info.ChartMeta.Title)
+                DiscordRPC.playing ("mode d'entrainement", info.ChartMeta.Title)
 
             override this.OnBack() =
                 Song.resume ()

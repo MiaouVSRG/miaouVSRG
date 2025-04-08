@@ -7,7 +7,7 @@ open DiscordRPC
 module DiscordRPC =
 
     let private client =
-        new DiscordRpcClient("420320424199716864", Logger = Logging.NullLogger(), ShutdownOnly = true)
+        new DiscordRpcClient("1358886070108029068", Logger = Logging.NullLogger(), ShutdownOnly = true)
 
     let deinit () =
         if not client.IsDisposed then
@@ -41,7 +41,7 @@ module DiscordRPC =
 
             let rp =
                 new RichPresence(
-                    State = "In menus",
+                    State = "Dans les menus",
                     Details = details,
                     Assets = Assets(LargeImageKey = "icon", LargeImageText = large_image_text())
                 )
