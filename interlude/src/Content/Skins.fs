@@ -230,17 +230,17 @@ module Skins =
 
     let private DEFAULT_NOTESKIN_META =
         {
-            Name = "Chocolate"
+            Name = "miaoum"
             Author = "Percyqaz"
             Editor = None
         }
 
-    /// Skin IDs are: *chocolate_default (represents embedded skin/noteskin), or the name of a folder under Skins
+    /// Skin IDs are: *miaoum_default (represents embedded skin/noteskin), or the name of a folder under Skins
     /// Skins consist of a noteskin (optional) and a HUD (optional)
     /// Skin IDs can interchangeably refer to the Skin container folder, the Noteskin within it, or the HUD within it
-    let private DEFAULT_NOTESKIN_ID = "*chocolate_default"
+    let private DEFAULT_NOTESKIN_ID = "*miaoum_default"
     let private DEFAULT_NOTESKIN =
-        "chocolate.zip"
+        "miaoum.zip"
         |> Utils.get_resource_stream
         |> Noteskin.FromZipStream
     let mutable private DEFAULT_SKIN_ICON = None

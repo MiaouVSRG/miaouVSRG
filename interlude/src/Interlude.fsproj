@@ -26,7 +26,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <EmbeddedResource Include="Resources\icon.png" />
-    <EmbeddedResource Include="Resources\chocolate.zip" />
+    <EmbeddedResource Include="Resources\miaoum.zip" />
     <EmbeddedResource Include="Resources\CrashSplashes.txt" />
     <EmbeddedResource Include="Resources\MenuSplashes.txt" />
     <EmbeddedResource Include="Resources\default.zip" />
