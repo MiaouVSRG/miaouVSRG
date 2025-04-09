@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/MiaouVSRG/miaouVSRG/refs/heads/master/interlude/src/Resources/default/Textures/LOGO%20RAW.png?token=GHSAT0AAAAAADBY2FX64VTXMXCLMYMTCNHYZ7WF7DA.png" align="left" height="400">
+<img src="https://github.com/MiaouVSRG/miaouVSRG/blob/master/interlude%2Fsrc%2FResources%2Fdefault%2FTextures%2Flogo%5B1x1%5D.png" align="left" height="400">
 
 ### MiaouVSRG c koi ??
 
