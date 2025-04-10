@@ -114,14 +114,14 @@ type MainMenuScreen() =
         MenuButton(
             %"menu.play",
             play_action,
-            Position.Box(0.0f, 0.5f, -300.0f, -200.0f, 1500.0f, 100.0f)
+            Position.Box(0.0f, 0.5f, -300.0f, -200.0f, 1470.0f, 100.0f)
         )
 
     let options_button =
         MenuButton(
             %"menu.options",
             (fun () -> OptionsMenuPage().Show()),
-            Position.Box(0.0f, 0.5f, -300.0f, -50.0f, 1430.0f, 100.0f)
+            Position.Box(0.0f, 0.5f, -300.0f, -50.0f, 1470.0f, 100.0f)
         )
 
     let quit_button =
@@ -131,7 +131,7 @@ type MainMenuScreen() =
                 if Screen.back Transitions.UnderLogo then
                     Screen.logo.MoveCenter ()
             ),
-            Position.Box(0.0f, 0.5f, -300.0f, 100.0f, 1360.0f, 100.0f)
+            Position.Box(0.0f, 0.5f, -300.0f, 100.0f, 1470.0f, 100.0f)
         )
 
     let choose_splash =

@@ -227,7 +227,7 @@ type GameOptions =
             CurrentChart = Setting.simple ""
             Theme = Themes.selected_id
 
-            ScrollSpeed = 2.05f<rate/ms> |> Setting.bounded (1.0f<rate/ms>, 5.0f<rate/ms>) |> Setting.roundf_uom 2
+            ScrollSpeed = 2.36f<rate/ms> |> Setting.bounded (1.0f<rate/ms>, 5.0f<rate/ms>) |> Setting.roundf_uom 2
             HitPosition = 76.0f |> Setting.bounded (-300.0f, 600.0f)
             HitLighting = Setting.simple false
             Upscroll = Setting.simple false

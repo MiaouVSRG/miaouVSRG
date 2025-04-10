@@ -47,9 +47,9 @@ type WikiBrowserPage() =
             .Position(Position.SliceL(200.0f, 900.0f))
         |+ Button(Icons.EXTERNAL_LINK + " " + %"wiki.openinbrowser", fun () ->
             match current_page with
-            | WikiIndex -> open_url ("https://yavsrg.net/interlude/wiki/index.html")
-            | WikiPage p -> open_url ("https://yavsrg.net/interlude/wiki/" + p.Filename + ".html")
-            | Changelog -> open_url ("https://yavsrg.net/interlude/changelog.html")
+            | WikiIndex -> open_url ("https://i.ibb.co/cXr93sQb/20250404-215447.jpg")
+            | WikiPage p -> open_url ("https://i.ibb.co/cXr93sQb/20250404-215447.jpg" + p.Filename + ".jpg")
+            | Changelog -> open_url ("https://i.ibb.co/cXr93sQb/20250404-215447.jpg")
         )
             .Position(Position.SliceR(300.0f))
 
