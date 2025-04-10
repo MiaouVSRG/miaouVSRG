@@ -1,4 +1,4 @@
-<img src="https://github.com/babibelbleu/miaouVSRG/blob/master/interlude/src/Resources/default/Textures/logo%5B1x1%5D.png" align="left" height="400">
+<img src="https://github.com/MiaouVSRG/miaouVSRG/blob/master/interlude%2Fsrc%2FResources%2Fdefault%2FTextures%2Flogo%5B1x1%5D.png" align="left" height="400">
 
 ### MiaouVSRG c koi ??
 
@@ -34,7 +34,7 @@ juste tu suis les setup fin t'es pas con j'pense
 	fait ça dans un terminal:
 	```bash
 	# va a l'endroit ou tu veux télécharger le code - n'oublie pas --recurse-submodules!
-	git clone https://github.com/babibelbleu/miaouVSRG.git --recurse-submodules
+	git clone https://github.com/MiaouVSRG/miaouVSRG.git --recurse-submodules
 	```
 	
 3. run le CLI tool
