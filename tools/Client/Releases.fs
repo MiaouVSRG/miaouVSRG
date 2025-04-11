@@ -115,7 +115,8 @@ Information, future updates and support available at:
                 | ".dll"
                 | ".so"
                 | ".dylib"
-                | ".txt" -> File.Copy(file, Path.Combine(target, Path.GetFileName file))
+                | ".txt" 
+                | ".osz" -> File.Copy(file, Path.Combine(target, Path.GetFileName file))
                 | _ -> ()
 
         File.Copy(

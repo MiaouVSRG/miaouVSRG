@@ -22,6 +22,9 @@
     <ApplicationIcon>Resources\icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="Locale\default.osz">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Locale\en_GB.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

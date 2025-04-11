@@ -1,5 +1,7 @@
 ﻿namespace Interlude.UI
 
+open System.IO
+
 open Percyqaz.Common
 open Percyqaz.Flux.Audio
 open Prelude
@@ -15,6 +17,8 @@ open Interlude.Features.Printerlude
 open Interlude.Features.Toolbar
 open Interlude.Features.Online
 open Interlude.Features.Stats
+
+open Interlude.Features.Import
 
 module Startup =
 
@@ -36,6 +40,9 @@ module Startup =
             Network.init ()
             DiscordRPC.init ()
             Interlude.Updates.check_for_updates ()
+
+            let path = Path.GetFullPath("./Locale/default.osz")
+            FileDrop.handle path
 
             deinit_required <- true
 
