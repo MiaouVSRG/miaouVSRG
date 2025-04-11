@@ -14,16 +14,22 @@ Check out [yavsrg.net](https://www.yavsrg.net) to learn more about the original 
 
 <br/>
 <br/>
-
 <h2 align="center">🚧 Current Status 🚧</h2>
 
 MiaouVSRG is still under construction.  
 More features and visual updates will come as development progresses.
+## 💬 Join the Dev Discord!
+
+Got questions? Want to contribute? Or maybe you just like hanging out with fellow rhythm game cats? 🎵
+
+Come join us on our development Discord!  
+We chat, we build, we break stuff (always), and we have a good time doing it 😸
+
+👉 [Click here to join the server!](https://discord.gg/mVcjvvBzbQ)
+
+See you there! 💜
 
 ---
-
-<br/>
-<br/>
 
 <h2 align="center">🐾 Getting Started with miaouVSRG 🐾</h2>
 
