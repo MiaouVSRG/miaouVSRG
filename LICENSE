@@ -1,4 +1,5 @@
 MiaouVSRG - A cute VSRG (vertical scrolling rhythm game) for cats only 🐱
+Please note that this project is based on Percyqaz's YAVSRG project (https://github.com/YAVSRG/YAVSRG)
 
 Different subdirectories in this repo have different licenses, see LICENSE in those subdirectories for license information.
 
@@ -8,4 +9,4 @@ In general everything is under the MIT License, with two exceptions:
 
 All other folders are licensed under the MIT license, even if no LICENSE file is indicated in the subdirectory
 
-If unsure contact me
+If unsure, please contact us !
