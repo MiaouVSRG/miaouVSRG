@@ -15,7 +15,7 @@ Check out [yavsrg.net](https://www.yavsrg.net) to learn more about the original 
 <br/>
 <br/>
 
-<h2 align="center">🚧 Current Status</h2>
+<h2 align="center">🚧 Current Status 🚧</h2>
 
 MiaouVSRG is still under construction.  
 More features and visual updates will come as development progresses.
@@ -25,7 +25,7 @@ More features and visual updates will come as development progresses.
 <br/>
 <br/>
 
-<h2 align="center"># 🐾 Getting Started with miaouVSRG</h2>
+<h2 align="center">🐾 Getting Started with miaouVSRG 🐾</h2>
 
 Welcome! This guide will walk you through setting up everything you need to start using the miaouVSRG project. Let's get things purring! 🐱💻
 
