@@ -254,7 +254,7 @@ module Skins =
     let private DEFAULT_HUD_META =
         {
             Name = "User"
-            Author = "Interlude"
+            Author = "MiaouVSRG"
             Editor = None
         }
     let private DEFAULT_HUD_FOLDER = "User"

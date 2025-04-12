@@ -48,10 +48,10 @@ module Play =
         if not (Directory.Exists GAME_FOLDER && Directory.EnumerateFileSystemEntries GAME_FOLDER |> Seq.isEmpty |> not) then
             update()
 
-        if File.Exists(Path.Combine(GAME_FOLDER, "Interlude.exe")) then
-            Process.Start(Path.Combine(GAME_FOLDER, "Interlude.exe")).WaitForExit()
-        elif File.Exists(Path.Combine(GAME_FOLDER, "Interlude")) then
-            Process.Start(Path.Combine(GAME_FOLDER, "Interlude")).WaitForExit()
+        if File.Exists(Path.Combine(GAME_FOLDER, "MiaouVSRG.exe")) then
+            Process.Start(Path.Combine(GAME_FOLDER, "MiaouVSRG.exe")).WaitForExit()
+        elif File.Exists(Path.Combine(GAME_FOLDER, "MiaouVSRG")) then
+            Process.Start(Path.Combine(GAME_FOLDER, "MiaouVSRG")).WaitForExit()
         else
             printfn "Your GAME folder is missing an Interlude executable, run `yavsrg update` to fix it"
 
