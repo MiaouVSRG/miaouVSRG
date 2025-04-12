@@ -24,24 +24,24 @@ module Play =
         | _ -> failwithf "Your platform (%O) is not supported! Maybe complain in the discord?" arch
 
     let update () =
-        exec "git" "checkout main"
-        exec "git" "pull"
-        exec "git" "fetch --tags"
+        // exec "git" "checkout main"
+        // exec "git" "pull"
+        // exec "git" "fetch --tags"
 
-        let tag_digest = eval "git" "rev-list --tags --max-count=1"
-        let tag_name = eval "git" (sprintf "describe --tags \"%s\"" tag_digest)
-        exec "git" (sprintf "checkout %s" tag_name)
-        exec "git" "submodule update --recursive"
+        // let tag_digest = eval "git" "rev-list --tags --max-count=1"
+        // let tag_name = eval "git" (sprintf "describe --tags \"%s\"" tag_digest)
+        // exec "git" (sprintf "checkout %s" tag_name)
+        // exec "git" "submodule update --recursive"
 
         try
             Directory.CreateDirectory GAME_FOLDER |> ignore
             let build_info = detect_build_info()
             Releases.build_platform build_info
-            ZipFile.ExtractToDirectory(Path.Combine(YAVSRG_PATH, "interlude", "releases", sprintf "Interlude-%s.zip" build_info.Name), GAME_FOLDER, true)
+            ZipFile.ExtractToDirectory(Path.Combine(YAVSRG_PATH, "interlude", "releases", sprintf "MiaouVSRG-%s.zip" build_info.Name), GAME_FOLDER, true)
         with err -> printfn "Error creating GAME folder: %O" err
 
-        exec "git" "checkout main"
-        exec "git" "submodule update --recursive"
+        // exec "git" "checkout main"
+        // exec "git" "submodule update --recursive"
 
     let play () =
 

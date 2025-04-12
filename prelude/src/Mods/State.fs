@@ -4,7 +4,7 @@ open System
 open Prelude
 open Prelude.Charts
 
-type ModState = Map<string, int>
+type ModState = Map<string, int64>
 
 module ModState =
 
@@ -14,22 +14,31 @@ module ModState =
 
     let cycle (id: string) (mods: ModState) : ModState =
         if mods.ContainsKey id then
-            let state = mods.[id] + 1
 
-            if state >= AVAILABLE_MODS.[id].States || AVAILABLE_MODS.[id].RandomSeed then
-                Map.remove id mods
-            else
-                Map.add id state mods
+            match AVAILABLE_MODS.[id].Type with
+            | Stateless
+            | RandomSeed
+            | ColumnSwap -> Map.remove id mods
+            | MultipleModes states ->
+                let state = mods.[id] + 1L
+                if state >= states then
+                    Map.remove id mods
+                else
+                    Map.add id state mods
         else
             let state =
-                if AVAILABLE_MODS.[id].RandomSeed then
-                    seed_generation.Next(-Int32.MinValue,0)
-                else
-                    0
+                match AVAILABLE_MODS.[id].Type with
+                | Stateless
+                | MultipleModes _ -> 0L
+                | RandomSeed -> (seed_generation.Next(-Int32.MinValue,0))
+                | ColumnSwap ->
+                    ColumnSwap.parse "1234123"
+                    |> Percyqaz.Common.Combinators.expect
+                    |> ColumnSwap.pack
 
             List.fold (fun m i -> Map.remove i m) (Map.add id state mods) AVAILABLE_MODS.[id].Exclusions
 
-    let in_priority_order (mods: ModState) : (string * Mod * int) seq =
+    let in_priority_order (mods: ModState) : (string * Mod * int64) seq =
         APPLICATION_PRIORITY_ORDER
         |> Seq.choose (fun id ->
             match Map.tryFind id mods with
@@ -80,8 +89,14 @@ module ModState =
                 if AVAILABLE_MODS.ContainsKey m then
                     status <- max status AVAILABLE_MODS.[m].Status
 
-                    if mods.[m] >= AVAILABLE_MODS.[m].States then
-                        failwithf "Mod '%s' in invalid state %i" m mods.[m]
+                    match AVAILABLE_MODS.[m].Type with
+                    | Stateless ->
+                        if mods.[m] <> 0L then failwithf "Mod '%s' in invalid state %i" m mods.[m]
+                    | RandomSeed -> ()
+                    | ColumnSwap -> ColumnSwap.unpack mods.[m] |> ignore
+                    | MultipleModes states ->
+                        if mods.[m] < 0L || mods.[m] >= states then
+                            failwithf "Mod '%s' in invalid state %i" m mods.[m]
 
                     for e in AVAILABLE_MODS.[m].Exclusions do
                         if mods.ContainsKey e then

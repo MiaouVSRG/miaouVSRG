@@ -26,36 +26,10 @@ module GameThread =
     let mutable private ui_initialiser: unit -> UIEntryPoint = fun () -> Unchecked.defaultof<_>
     let mutable private loading_icon: Bitmap option = None
 
-    let private LOCK_OBJ = obj()
-
-    (*
-        Action queuing
-
-        Most of the game runs from the 'render thread' where draws and updates take place
-        `defer` can be used to queue up an action to be executed before the next frame update
-        Used for:
-        - Queuing actions to take place on this thread from other threads
-        - Deferring an action to be done at the start of the next frame for other logic/UI reasons
-
-        Deferred actions are fire-and-forget, they will execute in the order they are queued
-    *)
-
-    let mutable internal GAME_THREAD_ID = -1
-    let is_game_thread() = Thread.CurrentThread.ManagedThreadId = GAME_THREAD_ID
-
-    let mutable private action_queue : (unit -> unit) list = []
-    let private run_action_queue() =
-        lock (LOCK_OBJ) (fun () ->
-            while not (List.isEmpty action_queue) do
-                let actions = action_queue
-                action_queue <- []
-                (for action in actions do action())
-        )
-    let defer (action: unit -> unit) =
-        lock (LOCK_OBJ) (fun () -> action_queue <- action_queue @ [ action ])
-
-    let inline on_game_thread (action: unit -> unit) =
-        if is_game_thread () then action () else defer action
+    let ACTION_QUEUE = ThreadActionQueue()
+    let is_game_thread() = ACTION_QUEUE.IsCurrent()
+    let defer (action: unit -> unit) : unit = ACTION_QUEUE.Defer action
+    let on_game_thread (action: unit -> unit) : unit = ACTION_QUEUE.EnsureCurrent action
 
     let private after_init_ev = Event<unit>()
     let after_init = after_init_ev.Publish
@@ -126,7 +100,8 @@ module GameThread =
 
             | FrameLimit.Smart ->
                 // On windows: smart cap = do some cool stuff for frame times that outperforms vsync
-                if OperatingSystem.IsWindows() then
+                // Disabled on Intel to see if it solves the random crashes
+                if FrameTimeStrategies.VBlankThread.ENABLED then
                     GLFW.SwapInterval(0)
                     FrameTimeStrategies.VBlankThread.switch (1000.0 / float refresh_rate) (GLFW.GetWin32Adapter monitor) (GLFW.GetWin32Monitor monitor)
                     if entire_monitor then WindowsVblankSync else WindowsDwmFlush
@@ -169,7 +144,7 @@ module GameThread =
 
         // Update
         start_of_frame <- now ()
-        run_action_queue()
+        ACTION_QUEUE.RunQueue()
         Input.begin_frame_events ()
         Audio.update elapsed_ms
         ui_root.Update(elapsed_ms, resized)
@@ -248,7 +223,7 @@ module GameThread =
     *)
 
     let internal init(_window: nativeptr<Window>, icon: Bitmap option, init_thunk: unit -> UIEntryPoint) =
-        GAME_THREAD_ID <- thread.ManagedThreadId
+        ACTION_QUEUE.Bind(thread.ManagedThreadId)
         window <- _window
         ui_initialiser <- init_thunk
         loading_icon <- icon

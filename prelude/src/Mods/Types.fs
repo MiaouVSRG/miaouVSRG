@@ -21,8 +21,8 @@ type ModdedChart =
         Notes: TimeArray<NoteRow>
         BPM: TimeArray<BPM>
         SV: TimeArray<float32>
-        ModsSelected: Map<string, int>
-        ModsApplied: Map<string, int>
+        ModsSelected: Map<string, int64>
+        ModsApplied: Map<string, int64>
         Status: ModStatus
     }
     member this.FirstNote = this.Notes.[0].Time
@@ -51,28 +51,31 @@ type ModdedChartInternal =
             BPM = chart.BPM
         }
 
+type ModStateType =
+    | Stateless
+    | MultipleModes of states: int64
+    | RandomSeed
+    | ColumnSwap
+
 type Mod =
     {
         Status: ModStatus
         /// Mods can have an integer "state" passed to them when they are applied - This allows some sub-behaviours within mods
-        States: int
-        /// If true, state should be a randomised seed
-        RandomSeed: bool
+        Type: ModStateType
         /// List of mod ids this mod cannot be used with
         Exclusions: string list
         /// Returns resulting chart + flag
         /// flag is true if the mod made meaningful changes to the chart and the mod should be considered 'applied'
-        Apply: int -> ModdedChartInternal -> ModdedChartInternal * bool
+        Apply: int64 -> ModdedChartInternal -> ModdedChartInternal * bool
         /// Short code representing the mod, to be abbreviated in places without room for the full names
         /// Language independent
-        Shorthand: int -> string
+        Shorthand: int64 -> string
     }
     static member internal Default =
         {
             Status = ModStatus.Unstored
-            States = 1
+            Type = Stateless
             Exclusions = []
-            RandomSeed = false
             Apply = (fun _ mc -> mc, false)
             Shorthand = fun _ -> "??"
         }

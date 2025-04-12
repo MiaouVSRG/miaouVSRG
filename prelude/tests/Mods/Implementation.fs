@@ -23,7 +23,7 @@ module Implementation =
     [<Test>]
     let ColumnSwap_Parse() =
 
-        match ColumnSwap.parse "54325-" with
+        match ColumnSwap.parse "65436-" with
         | Ok x -> printfn "%A" x
         | Error reason -> Assert.Fail(reason)
 
@@ -42,8 +42,8 @@ module Implementation =
     [<Test>]
     let ColumnSwap_Apply() =
 
-        let swap_1 = ColumnSwap.parse "0123210" |> expect
-        let swap_2 = ColumnSwap.parse "6543" |> expect
+        let swap_1 = ColumnSwap.parse "1234321" |> expect
+        let swap_2 = ColumnSwap.parse "7654" |> expect
 
         let swapped_chart, _ = ColumnSwap.apply swap_1 (ModdedChartInternal.OfChart SAMPLE_CHART)
         let swapped_back_chart, _ = ColumnSwap.apply swap_2 swapped_chart
@@ -58,6 +58,26 @@ module Implementation =
         let swap = ColumnSwap.parse "9999" |> expect
         let _, mod_applied = ColumnSwap.apply swap (ModdedChartInternal.OfChart SAMPLE_CHART)
         Assert.False(mod_applied)
+
+
+    [<Test>]
+     let ColumnSwap_Pack_RoundTrip() =
+ 
+         let example = ColumnSwap.parse "54325-" |> expect
+         let packed = ColumnSwap.pack example
+         printfn "%B" packed
+ 
+         let unpacked = ColumnSwap.unpack packed
+ 
+         Assert.AreEqual(example, unpacked)
+ 
+         let example2 = ColumnSwap.parse "9090990909" |> expect
+         let packed2 = ColumnSwap.pack example2
+         printfn "%B" packed2
+ 
+         let unpacked2 = ColumnSwap.unpack packed2
+ 
+         Assert.AreEqual(example2, unpacked2)
 
     [<Test>]
     let Inverse() =
