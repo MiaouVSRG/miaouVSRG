@@ -92,7 +92,7 @@ type LoadingScreen(post_init_thunk: unit -> unit) =
         if closing then
             Text.draw_aligned_b (
                 Style.font,
-                "Thank you for playing",
+                "à bientot ^^",
                 70.0f,
                 this.Bounds.CenterX,
                 40.0f,
@@ -102,7 +102,7 @@ type LoadingScreen(post_init_thunk: unit -> unit) =
         else
             Text.draw_aligned_b (
                 Style.font,
-                "Loading :)",
+                "Chargement :3",
                 70.0f,
                 this.Bounds.CenterX,
                 40.0f,

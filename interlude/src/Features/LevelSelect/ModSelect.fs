@@ -13,9 +13,9 @@ open Interlude.Features.Gameplay
 
 type private ColumnSwapPage() =
     inherit Page()
-
+ 
     static let columns_setting = Setting.simple "1234123"
-
+ 
     override this.Content() =
         page_container()
             .With(
@@ -26,7 +26,7 @@ type private ColumnSwapPage() =
                     .Pos(3),
                 WIP()
             )
-
+ 
     override this.Title = %"mod.column_swap"
     override this.OnClose() =
         match ColumnSwap.parse columns_setting.Value with
@@ -109,14 +109,13 @@ type private ModSelectPage(change_rate: Rate -> unit) =
             GridFlowContainer<ModSelector>(ModSelector.HEIGHT, 3)
                 .Spacing(20.0f)
                 .WrapNavigation(false)
-                .Pos(5, PAGE_BOTTOM - 5, PageWidth.Full)
-                .With(
+                .Pos(5, PAGE_BOTTOM - 5, PageWidth.Full).With(
                     ModSelector(
                         "auto",
                         (fun _ -> if SelectedChart.autoplay then Some 0 else None),
                         (fun _ -> SelectedChart.autoplay <- not SelectedChart.autoplay)
                     )
-                )
+            )
                 .With(seq {
                     for id in Mods.MENU_DISPLAY_ORDER do
                         yield ModSelector(
@@ -143,55 +142,52 @@ type private ModSelectPage(change_rate: Rate -> unit) =
                     )
                 )
 
-        page_container()
-            .With(
-                PageSetting(%"gameplay.rate",
-                    Slider(
-                        SelectedChart.rate
-                        |> Setting.map id (fun v -> round (v / 0.05f<rate>) * 0.05f<rate>)
-                        |> Setting.uom,
-                        Format = sprintf "%.02fx"
-                    )
-                )
-                    .Help(
-                        Help.Info("gameplay.rate")
-                            .Hotkey(%"levelselect.selected_mods.uprate.hint", "uprate")
-                            .Hotkey(%"levelselect.selected_mods.downrate.hint", "downrate")
-                    )
-                    .Pos(0),
-                Text([(%%"uprate").ToString(); (%%"downrate").ToString()] %> "gameplay.rate.hotkey_hint_i")
-                    .Color(Colors.text_subheading)
-                    .Align(Alignment.LEFT)
-                    .Position(page_position(2, 1, PageWidth.Full).ShrinkL(PAGE_LABEL_WIDTH)),
-                Text(%"gameplay.rate.hotkey_hint_ii")
-                    .Color(Colors.text_subheading)
-                    .Align(Alignment.LEFT)
-                    .Position(page_position(3, 1, PageWidth.Full).ShrinkL(PAGE_LABEL_WIDTH)),
-
-                mod_grid,
-
-                PageButton(%"gameplay.pacemaker", (fun () -> PacemakerOptionsPage().Show()), Icon = Icons.FLAG)
-                    .Help(Help.Info("gameplay.pacemaker"))
-                    .Pos(19),
-
-                PageSetting(%"mods.mod_status",
-                    Text(fun () ->
-                        match mod_status() with
-                        | ModStatus.Ranked -> %"mods.mod_status.ranked"
-                        | ModStatus.Unranked -> %"mods.mod_status.unranked"
-                        | _ -> %"mods.mod_status.unstored"
+        page_container().With(
+                 PageSetting(%"gameplay.rate",
+                     Slider(
+                         SelectedChart.rate
+                         |> Setting.map id (fun v -> round (v / 0.05f<rate>) * 0.05f<rate>)
+                         |> Setting.uom,
+                         Format = sprintf "%.02fx"
                      )
-                        .Color(fun () ->
-                            match mod_status() with
-                            | ModStatus.Ranked -> Colors.text_green_2
-                            | ModStatus.Unranked -> Colors.text_yellow_2
-                            | _ -> Colors.text_greyout
-                        )
-                        .Align(Alignment.LEFT)
-                )
-                    .Pos(21)
-            )
-
+                ).Help(
+                         Help.Info("gameplay.rate")
+                             .Hotkey(%"levelselect.selected_mods.uprate.hint", "uprate")
+                             .Hotkey(%"levelselect.selected_mods.downrate.hint", "downrate")
+                     )
+                     .Pos(0),
+                 Text([(%%"uprate").ToString(); (%%"downrate").ToString()] %> "gameplay.rate.hotkey_hint_i")
+                     .Color(Colors.text_subheading)
+                     .Align(Alignment.LEFT)
+                     .Position(page_position(2, 1, PageWidth.Full).ShrinkL(PAGE_LABEL_WIDTH)),
+                 Text(%"gameplay.rate.hotkey_hint_ii")
+                     .Color(Colors.text_subheading)
+                     .Align(Alignment.LEFT)
+                     .Position(page_position(3, 1, PageWidth.Full).ShrinkL(PAGE_LABEL_WIDTH)),
+ 
+                 mod_grid,
+ 
+                 PageButton(%"gameplay.pacemaker", (fun () -> PacemakerOptionsPage().Show()), Icon = Icons.FLAG)
+                     .Help(Help.Info("gameplay.pacemaker"))
+                     .Pos(19),
+ 
+                 PageSetting(%"mods.mod_status",
+                     Text(fun () ->
+                         match mod_status() with
+                         | ModStatus.Ranked -> %"mods.mod_status.ranked"
+                         | ModStatus.Unranked -> %"mods.mod_status.unranked"
+                         | _ -> %"mods.mod_status.unstored"
+                      )
+                         .Color(fun () ->
+                             match mod_status() with
+                             | ModStatus.Ranked -> Colors.text_green_2
+                             | ModStatus.Unranked -> Colors.text_yellow_2
+                             | _ -> Colors.text_greyout
+                         )
+                         .Align(Alignment.LEFT)
+                 )
+                     .Pos(21)
+             )
     override this.Update(elapsed_ms, moved) =
         base.Update(elapsed_ms, moved)
 

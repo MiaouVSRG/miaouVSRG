@@ -2,7 +2,7 @@
 title: How to play
 folder: Getting started
 ---
-# The basics
+# Les bases
 
 While you play a song, **notes** will scroll along **columns**, towards the **receptors** at the end.
 When a note lines up with the receptors, press the corresponding button for that column.

@@ -70,7 +70,7 @@ let main (argv: string array) : int =
         -1
     else
 
-    let m = new Mutex(true, "Interlude")
+    let m = new Mutex(true, "MiaouVSRG")
 
     if argv.Length > 0 then
 
@@ -79,7 +79,7 @@ let main (argv: string array) : int =
             m.ReleaseMutex()
 
         else
-            match Shell.IPC.send "Interlude" (String.concat " " argv) with
+            match Shell.IPC.send "MiaouVSRG" (String.concat " " argv) with
             | Some success -> printfn "%s" success
             | None -> printfn "Error: Connection timed out!"
 
@@ -91,7 +91,7 @@ let main (argv: string array) : int =
             m.Dispose()
 
             if OperatingSystem.IsWindows() then
-                let executable = Path.Combine(executable_location, "Interlude.exe")
+                let executable = Path.Combine(executable_location, "MiaouVSRG.exe")
                 let launch_dir = Path.GetDirectoryName executable
 
                 try
@@ -106,10 +106,10 @@ let main (argv: string array) : int =
                     printfn "%O" err
 
     elif DEV_MODE then
-        let instances = Process.GetProcessesByName "Interlude" |> Array.length
+        let instances = Process.GetProcessesByName "MiaouVSRG" |> Array.length
         launch (instances - 1)
     else
-        match Shell.IPC.send "Interlude" "focus" with
+        match Shell.IPC.send "MiaouVSRG" "focus" with
         | Some success -> printfn "%s" success
         | None -> printfn "Error: Connection timed out!"
 

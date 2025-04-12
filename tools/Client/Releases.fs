@@ -7,8 +7,8 @@ open YAVSRG.CLI.Utils
 module Releases =
 
     let README = """
-Interlude - Keyboard-based vertically scrolling rhythm game.
-Copyright (C) 2018-2025 Percyqaz
+A cute VSRG (vertical scrolling rhythm game) for cats only 🐱
+Copyright (C) 2025 MiaouVSRG
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -50,7 +50,7 @@ Information, future updates and support available at:
                 BassFxLibraryFile = "bass_fx.dll"
                 GLFWLibraryFile = "glfw3.dll"
                 SQLiteLibraryFile = "e_sqlite3.dll"
-                ExecutableFile = "Interlude.exe"
+                ExecutableFile = "MiaouVSRG.exe"
             }
         static member LINUX_X64 =
             {
@@ -60,7 +60,7 @@ Information, future updates and support available at:
                 BassFxLibraryFile = "libbass_fx.so"
                 GLFWLibraryFile = "libglfw.so.3.3"
                 SQLiteLibraryFile = "libe_sqlite3.so"
-                ExecutableFile = "Interlude"
+                ExecutableFile = "MiaouVSRG"
             }
         static member OSX_X64 =
             {
@@ -70,7 +70,7 @@ Information, future updates and support available at:
                 BassFxLibraryFile = "libbass_fx.dylib"
                 GLFWLibraryFile = "libglfw.3.dylib"
                 SQLiteLibraryFile = "libe_sqlite3.dylib"
-                ExecutableFile = "Interlude"
+                ExecutableFile = "MiaouVSRG"
             }
         static member OSX_ARM64 =
             {
@@ -80,7 +80,7 @@ Information, future updates and support available at:
                 BassFxLibraryFile = "libbass_fx.dylib"
                 GLFWLibraryFile = "libglfw.3.dylib"
                 SQLiteLibraryFile = "libe_sqlite3.dylib"
-                ExecutableFile = "Interlude"
+                ExecutableFile = "MiaouVSRG"
             }
 
     let build_platform (info: BuildPlatformInfo) =
@@ -89,7 +89,7 @@ Information, future updates and support available at:
             Path.Combine(INTERLUDE_SOURCE_PATH, "bin", "Release", "net9.0", info.RuntimeId)
 
         let clean_dir =
-            Path.Combine(YAVSRG_PATH, "interlude", "releases", $"Interlude-{info.Name}")
+            Path.Combine(YAVSRG_PATH, "interlude", "releases", $"MiaouVSRG-{info.Name}")
 
         try
             Directory.Delete(build_dir, true)
@@ -115,7 +115,8 @@ Information, future updates and support available at:
                 | ".dll"
                 | ".so"
                 | ".dylib"
-                | ".txt" -> File.Copy(file, Path.Combine(target, Path.GetFileName file))
+                | ".txt" 
+                | ".osz" -> File.Copy(file, Path.Combine(target, Path.GetFileName file))
                 | _ -> ()
 
         File.Copy(
@@ -144,7 +145,7 @@ Information, future updates and support available at:
 
         File.WriteAllText(Path.Combine(clean_dir, "README.txt"), README.Trim() + "\n")
         if not (info.ExecutableFile.EndsWith "exe") then
-            File.WriteAllText(Path.Combine(clean_dir, "launch.sh"), "chmod +x ./Interlude\n./Interlude")
+            File.WriteAllText(Path.Combine(clean_dir, "launch.sh"), "chmod +x ./MiaouVSRG\n./MiaouVSRG")
 
         printfn "Outputted to: %s" clean_dir
 

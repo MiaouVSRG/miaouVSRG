@@ -26,8 +26,8 @@ module Assets =
         <| Path.Combine(Utils.ASSETS_PATH, "default")
         <| Path.Combine(Utils.BUILD_RESOURCES_PATH, "default.zip")
 
-        cleanup_noteskin_json "chocolate"
+        cleanup_noteskin_json "miaoum"
 
         make_zip
-        <| Path.Combine(Utils.ASSETS_PATH, "chocolate")
-        <| Path.Combine(Utils.BUILD_RESOURCES_PATH, "chocolate.zip")
+        <| Path.Combine(Utils.ASSETS_PATH, "miaoum")
+        <| Path.Combine(Utils.BUILD_RESOURCES_PATH, "miaoum.zip")

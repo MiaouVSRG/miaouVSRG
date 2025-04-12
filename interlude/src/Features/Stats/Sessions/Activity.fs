@@ -129,15 +129,14 @@ type RecentActivityGrid(selected: Setting<(DateOnly * Session) option>) =
     let PADDING = 20.0f
 
     override this.Init(parent: Widget) =
-        this
-            .Add(
-                Button(
-                    sprintf "%s %s" Icons.ARROW_LEFT (%"stats.activity.view_older"),
-                    fun () -> AllYearsActivityPage(selected).Show()
+        this.Add(
+        Button(
+             sprintf "%s %s" Icons.ARROW_LEFT (%"stats.activity.view_older"),
+         fun () -> AllYearsActivityPage(selected).Show()
                 )
-                    .Floating()
-                    .Position(Position.BorderB(30.0f).SliceL(120.0f).Translate(10.0f, 5.0f))
-            )
+                     .Floating()
+                     .Position(Position.BorderB(30.0f).SliceL(120.0f).Translate(10.0f, 5.0f))
+             )
         base.Init parent
 
     override this.Draw() =

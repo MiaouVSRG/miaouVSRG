@@ -116,7 +116,7 @@ module ReplayScreen =
                 )
 
             override this.OnEnter p =
-                DiscordRPC.playing ("Watching a replay", SelectedChart.CACHE_DATA.Value.Title)
+                DiscordRPC.playing ("Regarde un replay", SelectedChart.CACHE_DATA.Value.Title)
                 base.OnEnter p
 
             override this.OnExit p =

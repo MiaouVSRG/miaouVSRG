@@ -70,7 +70,7 @@ module private TreeState =
 
     let MULTI_SELECT_KEY = Bind.mk Keys.LeftShift
 
-    let CHART_HEIGHT = 90.0f
+    let CHART_HEIGHT = 120.0f
     let GROUP_HEIGHT = 55.0f
 
     [<AbstractClass>]

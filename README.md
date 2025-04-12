@@ -1,95 +1,100 @@
-<img src="https://github.com/YAVSRG/YAVSRG/assets/21290233/f3a88ac6-431a-46a1-9351-95266f30fe70.png" align="left" height="240">
+<img src="https://github.com/MiaouVSRG/miaouVSRG-to-delete/blob/master/interlude/src/Resources/default/Textures/LOGO%20RAW.png" align="left" height="400">
 
-### What is YAVSRG?
+### MiaouVSRG
 
-YET ANOTHER VERTICALLY SCROLLING RHYTHM GAME is my collection of rhythm game projects full of the features and ideas I think make games of this genre fun to play.
+**MiaouVSRG** is a **work-in-progress** rhythm game project built upon the engine of **[YAVSRG](https://github.com/YAVSRG/YAVSRG)** (Yet Another Vertically Scrolling Rhythm Game), created by [@Percyqaz](https://github.com/YAVSRG).
 
-The project is centred around my custom rhythm game client, **Interlude**, and the tooling around it.
+Our goal is to deliver a fresh rhythm game experience, featuring:
+- Lots of quality-of-life improvements
+- A brand new cute, cat-inspired art style :3
 
-Visit [yavsrg.net](https://www.yavsrg.net) to read more about this project and its features.
+A huge thanks to **Percyqaz** for giving us permission to build on his work and for his kind support throughout the development!
+
+Check out [yavsrg.net](https://www.yavsrg.net) to learn more about the original project.
 
 <br/>
+<br/>
+<h2 align="center">🚧 Current Status 🚧</h2>
 
-<h2 align="center">🎮 Playing the game</h2>
+MiaouVSRG is still under construction.  
+More features and visual updates will come as development progresses.
+## 💬 Join the Dev Discord!
 
-Various player guides, including a wiki, are built into the game to help you get started, especially if you're coming from another popular rhythm game client.  
-You can also [check out the wiki here](https://www.yavsrg.net/interlude/wiki) in your browser!
+Got questions? Want to contribute? Or maybe you just like hanging out with fellow rhythm game cats? 🎵
 
-**On Windows and Linux** - Download the latest release [from the website](https://www.yavsrg.net), extract it and play!  
-**On macOS** - Not officially supported, to try possibly unstable builds see instructions below
+Come join us on our development Discord!  
+We chat, we build, we break stuff (always), and we have a good time doing it 😸
 
-<h2 align="center">🧱 Building Interlude</h2>
+👉 [Click here to join the server!](https://discord.gg/mVcjvvBzbQ)
 
-> [!Note]
+See you there! 💜
+
+---
+
+<h2 align="center">🐾 Getting Started with miaouVSRG 🐾</h2>
+
+Welcome! This guide will walk you through setting up everything you need to start using the miaouVSRG project. Let's get things purring! 🐱💻
+
+---
+
+## 1. Install the Required Tools
+
+Before diving in, please make sure you have the following installed:
+
+- [Git](https://git-scm.com/downloads)  
+- [.NET 9 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/9.0)  
+
+Just follow the installation setup — you’ve got this! :3 ✨
+
+---
+
+## 2. Set Up the Repository
+
+Open a terminal and run the following commands:
+
+```bash
+# Navigate to the directory where you'd like to clone the project
+# Don’t forget the --recurse-submodules part – it’s important!
+git clone https://github.com/MiaouVSRG/miaouVSRG.git --recurse-submodules
+```
+
+---
+
+## 3. Launch the CLI Tool
+
+Navigate to the tools folder and run the CLI:
+
+```bash
+cd miaouVSRG/tools
+dotnet run
+```
+
+You should see something like this in your terminal:
+
+```
+== YAVSRG CLI Tools ==
+type 'help' for a list of commands, or help <command> for details
 >
-> If you just want to play the game on Windows or Linux, **you do *not* need to do this**, instead get the game by downloading the latest release from the site
+```
 
-1. Install [Git](https://git-scm.com/downloads), and [the .NET 9 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/9.0)  
-Follow the install instructions for both of these for your platform
+Looking good! 😺
 
-2. Set up the repository
+---
 
-	To do this via a terminal:
-	```bash
-	# Navigate to somewhere you want to store the interlude codebase - Don't forget --recurse-submodules!
-	git clone https://github.com/YAVSRG/YAVSRG.git --recurse-submodules
-	```
-	
-3. Run the CLI tool
-	```bash
-	cd YAVSRG/tools
-	dotnet run
-	```
-	You will see in your terminal something like
-	```
-	== YAVSRG CLI Tools ==
-	type 'help' for a list of commands, or help <command> for details
-	>
-	```
+## 4. Build and Launch the Game
 
-4. When *in the CLI tool*, run the `play` command to build and play the latest version.  
-    This will create a build of the game under `YAVSRG/GAME` which can be run directly if you prefer.  
-    To update your game when a new version comes out, run the CLI tool again, then run `update`.
-	
-**If a step isn't working/you are stuck, get assistance in [the discord](https://yavsrg.net/discord)**
+Inside the CLI, type the following command to build and launch the latest version of the game:
 
-You can delete the entire YAVSRG folder to entirely remove the game and all data from your system.
+```
+play
+```
 
-<h2 align="center">🧱 Building Interlude <code style="color: red; font-size: 20px">&lt;for developers only&gt;</code></h2>
+This will compile the game and place the build in the `miaouVSRG/GAME` directory. From there, you can launch it directly!
 
-> [!Note]
->
-> If the setup guide for non-developers on Linux/macOS didn't work, please **do not try these steps** and instead get assistance in [the discord](https://yavsrg.net/discord) if all you want to do is play.
+---
 
-Developers should first follow the non-developer setup and ensure the CLI tool works.  
-Use the `debug_run` CLI command to build and test the current branch - You should run this at least once before building via an IDE.
+![miaouVSRG Screenshot](https://i.ibb.co/cXr93sQb/20250404-215447.jpg)
 
-After the first use of `debug_run`, you should have the correct BASS .dll/.dynlib/.so files for your platform placed in YAVSRG/interlude/src/bin/Debug/net9.0  
-If not, the game will let you know on launch - Look for them here https://github.com/YAVSRG/YAVSRG/tree/main/engine/lib (you need both the main and the fx one)
-If your platform isn't there contact me in the discord or search online for it
+Enjoy the game! 🎮🐾
 
-If you open YAVSRG.sln in [Visual Studio 2022](https://visualstudio.microsoft.com/vs/community/), setting Interlude as the active project will let you simply build and run by pressing F5.
 
-While Interlude stores all its data in the same folder as the exe by default, you can change that to a specific location - In YAVSRG/interlude/src/bin/Debug/net9.0/config.json you can edit `WorkingDirectory` to whatever is convenient
-
-I use `"C:/Interlude/dev"` on Windows  
-If you previously built Interlude as a non-developer, setting it to `"../../../../../GAME"` means both builds share data  
-If you previously installed Interlude somewhere else, setting it to that path means both copies share data
-
-<h2 align="center">🤝 Contributing</h2>
-
-Come join [the discord](https://yavsrg.net/discord) -- Send me playtesting feedback, feature requests, bug reports, etc.
-
-Once up and running with the developer build instructions above, steps for contributing are outlined [here](https://github.com/YAVSRG/YAVSRG/tree/main/docs/contributors.md)
-
-Pull requests are very welcome!
-If you spot a bug, typo or other minor problem and have a quick fix, feel free to submit a PR.
-If you want to work on a feature please check with me first via [Discord](https://yavsrg.net/discord)
-
-> [!Warning]
->
-> IMPOSTOR SYNDROME DISCLAIMER
->
-> Don't know F#? Don't know how to code but want to learn? This is a hobby project largely dedicated to expanding my skills as a programmer and I would be pleased if it could do the same for you.
->
-> Ask away in the Discord, I'm often free to chat about how I or the codebase work and will happily give YOU the tools to make meaningful contributions.

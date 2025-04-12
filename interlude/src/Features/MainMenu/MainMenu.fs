@@ -114,14 +114,14 @@ type MainMenuScreen() =
         MenuButton(
             %"menu.play",
             play_action,
-            Position.Box(0.0f, 0.5f, -300.0f, -200.0f, 1500.0f, 100.0f)
+            Position.Box(0.0f, 0.5f, -300.0f, -200.0f, 1470.0f, 100.0f)
         )
 
     let options_button =
         MenuButton(
             %"menu.options",
             (fun () -> OptionsMenuPage().Show()),
-            Position.Box(0.0f, 0.5f, -300.0f, -50.0f, 1430.0f, 100.0f)
+            Position.Box(0.0f, 0.5f, -300.0f, -50.0f, 1470.0f, 100.0f)
         )
 
     let quit_button =
@@ -131,7 +131,7 @@ type MainMenuScreen() =
                 if Screen.back Transitions.UnderLogo then
                     Screen.logo.MoveCenter ()
             ),
-            Position.Box(0.0f, 0.5f, -300.0f, 100.0f, 1360.0f, 100.0f)
+            Position.Box(0.0f, 0.5f, -300.0f, 100.0f, 1470.0f, 100.0f)
         )
 
     let choose_splash =
@@ -161,7 +161,7 @@ type MainMenuScreen() =
 
                 AngledButton(
                     Icons.MESSAGE_SQUARE + " " + %"menu.discord",
-                    (fun () -> open_url ("https://discord.gg/tA22tWR")),
+                    (fun () -> open_url ("https://discord.gg/mVcjvvBzbQ")),
                     Palette.DARK_100
                 )
                     .Position(Position.SliceB(AngledButton.HEIGHT).SliceR(300.0f).TranslateX(-325.0f))
@@ -207,7 +207,7 @@ type MainMenuScreen() =
                 Animation.Action(fun () -> splash_fade.Target <- 1.0f)
             ]
 
-        DiscordRPC.in_menus ("Main menu")
+        DiscordRPC.in_menus ("miaou")
 
     override this.OnExit(next: ScreenType) =
         if next <> ScreenType.SplashScreen then

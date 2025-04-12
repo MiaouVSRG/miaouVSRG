@@ -124,11 +124,12 @@ type private ChartItem(group_name: string, group_ctx: LibraryGroupContext, chart
             | _ -> if CollectionActions.is_liked chart_meta then Icons.HEART else ""
 
     override this.Bounds(top: float32) : Rect =
-        Rect.FromEdges(Render.width() * 0.4f + Style.PADDING, top, Render.width(), top + CHART_HEIGHT)
+        //Rect.FromEdges(Render.width() * 0.4f + Style.PADDING, top, Render.width(), top + CHART_HEIGHT)
+        Rect.FromEdges(Render.width() * 0.6f + Style.PADDING, top, Render.width(), top + CHART_HEIGHT)
 
     override this.Selected : bool = selected_chart = chart_meta.Hash && SelectedChart.LIBRARY_CTX.Matches ctx
 
-    override this.Spacing = Style.PADDING
+    override this.Spacing = Style.PADDING_SONG_SELECT
     member this.Chart = chart_meta
     member this.Context = ctx
 

@@ -26,7 +26,6 @@ module ModState =
                 else
                     Map.add id state mods
         else
-
             let state =
                 match AVAILABLE_MODS.[id].Type with
                 | Stateless

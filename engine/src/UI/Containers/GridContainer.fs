@@ -347,7 +347,7 @@ type GridFlowContainer<'T when 'T :> Widget>(row_height, columns: int) as this =
             with set v = size_change <- v
 
     interface IContainer<'T> with
-
+ 
         member this.Add (child: 'T) : unit =
             assert(GameThread.is_game_thread())
             children.Add
@@ -357,11 +357,11 @@ type GridFlowContainer<'T when 'T :> Widget>(row_height, columns: int) as this =
                     X = -1
                     Y = -1
                 }
-
+ 
             if this.Initialised then
                 child.Init this
                 refresh <- true
-
+ 
         member this.Remove (child: 'T) : bool =
             assert(GameThread.is_game_thread())
             children.RemoveAll(fun x -> System.Object.ReferenceEquals(x.Widget, child)) > 0

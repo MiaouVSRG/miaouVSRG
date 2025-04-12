@@ -1,5 +1,5 @@
-﻿namespace Percyqaz.Flux.Windowing
-
+namespace Percyqaz.Flux.Windowing
+ 
 open System.Threading
 
 (*

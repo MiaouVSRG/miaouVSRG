@@ -51,9 +51,9 @@ module Mods =
                     fun state mc ->
                         match state with
                         | 0L -> NoLN.apply mc
-                        | 1L -> NoLN.apply_shorter_than 1.0f<beat> mc
-                        | 2L -> NoLN.apply_shorter_than 0.5f<beat>  mc
-                        | 3L -> NoLN.apply_shorter_than 0.25f<beat> mc
+                         | 1L -> NoLN.apply_shorter_than 1.0f<beat> mc
+                         | 2L -> NoLN.apply_shorter_than 0.5f<beat>  mc
+                         | 3L -> NoLN.apply_shorter_than 0.25f<beat> mc
                         | _ -> failwith "impossible"
                 Shorthand = function 3L -> "LN-1" | 2L -> "LN-2" | 1L -> "LN-3" | _ -> "NLN"
             }
@@ -81,13 +81,13 @@ module Mods =
             }
 
             "column_swap",
-            { Mod.Default with
-                Status = ModStatus.Unstored
-                Type = ColumnSwap
-                Exclusions = [ "shuffle"; "random"; "mirror" ]
-                Apply = fun s mc -> ColumnSwap.apply (ColumnSwap.unpack s) mc
-                Shorthand = fun _ -> "CSW"
-            }
+             { Mod.Default with
+                 Status = ModStatus.Unstored
+                 Type = ColumnSwap
+                 Exclusions = [ "shuffle"; "random"; "mirror" ]
+                 Apply = fun s mc -> ColumnSwap.apply (ColumnSwap.unpack s) mc
+                 Shorthand = fun _ -> "CSW"
+             }
         ]
 
     let APPLICATION_PRIORITY_ORDER =

@@ -4,12 +4,14 @@ open System
 open System.Reflection
 open System.IO
 
+open Percyqaz.Common
+
 module Utils =
 
     let get_resource_stream (name: string) : Stream =
         Assembly
             .GetExecutingAssembly()
-            .GetManifestResourceStream("Interlude.Resources." + name)
+            .GetManifestResourceStream("MiaouVSRG.Resources." + name)
 
     let get_resource_text (name: string) : string =
         use s = get_resource_stream name
@@ -20,5 +22,5 @@ module Utils =
         let r = new Random()
         let text = get_resource_text name
         let lines = text.Split("\n")
-
+        
         fun () -> lines.[r.Next lines.Length]

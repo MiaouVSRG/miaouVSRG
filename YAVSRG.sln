@@ -9,7 +9,7 @@ Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Prelude", "prelude\src\Prel
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Percyqaz.Flux", "engine\src\Percyqaz.Flux.fsproj", "{C8BE8EAC-53C0-4225-9160-17D344C6C786}"
 EndProject
-Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Interlude", "interlude\src\Interlude.fsproj", "{D5EFAE0B-7E9F-4856-98B5-80D3D3F37231}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Interlude", "interlude\src\MiaouVSRG.fsproj", "{D5EFAE0B-7E9F-4856-98B5-80D3D3F37231}"
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "YAVSRG.CLI", "tools\YAVSRG.CLI.fsproj", "{811E948A-7F59-4BCE-A655-5CF4ED43E669}"
 EndProject
