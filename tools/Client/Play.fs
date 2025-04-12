@@ -48,7 +48,11 @@ module Play =
         if not (Directory.Exists GAME_FOLDER && Directory.EnumerateFileSystemEntries GAME_FOLDER |> Seq.isEmpty |> not) then
             update()
 
-        if File.Exists(Path.Combine(GAME_FOLDER, "MiaouVSRG.exe")) then
+        if File.Exists(Path.Combine(GAME_FOLDER, "Interlude.exe")) then
+            File.Move(Path.Combine(GAME_FOLDER, "Interlude.exe"), Path.Combine(GAME_FOLDER, "MiaouVSRG.exe"), true)
+        elif File.Exists(Path.Combine(GAME_FOLDER, "Interlude")) then
+            File.Move(Path.Combine(GAME_FOLDER, "Interlude"), Path.Combine(GAME_FOLDER, "MiaouVSRG"), true)
+        elif File.Exists(Path.Combine(GAME_FOLDER, "MiaouVSRG.exe")) then
             Process.Start(Path.Combine(GAME_FOLDER, "MiaouVSRG.exe")).WaitForExit()
         elif File.Exists(Path.Combine(GAME_FOLDER, "MiaouVSRG")) then
             Process.Start(Path.Combine(GAME_FOLDER, "MiaouVSRG")).WaitForExit()
