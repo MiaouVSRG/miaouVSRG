@@ -13,7 +13,7 @@ open Interlude.Utils
 open Interlude.Content
 open Interlude.UI
 open Interlude.Features.Online
-open Interlude.Features.Wiki
+// open Interlude.Features.Wiki
 open Interlude.Features.OptionsMenu
 open Interlude.Features.LevelSelect
 open Interlude.Features.Import
@@ -151,13 +151,13 @@ type MainMenuScreen() =
                 options_button,
                 quit_button,
 
-                AngledButton(
-                    Icons.STAR + " " + %"menu.changelog",
-                    WikiBrowserPage.ShowChangelog,
-                    Palette.MAIN_100
-                )
-                    .LeanRight(false)
-                    .Position(Position.SliceB(AngledButton.HEIGHT).SliceR(300.0f)),
+                // AngledButton(
+                //     Icons.STAR + " " + %"menu.changelog",
+                //     WikiBrowserPage.ShowChangelog,
+                //     Palette.MAIN_100
+                // )
+                //     .LeanRight(false)
+                //     .Position(Position.SliceB(AngledButton.HEIGHT).SliceR(300.0f)),
 
                 AngledButton(
                     Icons.MESSAGE_SQUARE + " " + %"menu.discord",
@@ -181,9 +181,9 @@ type MainMenuScreen() =
             if Data.Maintenance.Patterns.recalculate_needed Content.Charts then
                 Library.Library.recalculate_patterns()
 
-            if TOTAL_STATS.NotesHit = 0 then
-                // todo: quick start wizard instead
-                WikiBrowserPage.Show()
+            // if TOTAL_STATS.NotesHit = 0 then
+            //     // todo: quick start wizard instead
+            //     WikiBrowserPage.Show()
 
         splash_text <- choose_splash ()
         Screen.logo.MoveMenu()

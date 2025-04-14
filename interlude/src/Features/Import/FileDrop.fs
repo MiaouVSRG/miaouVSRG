@@ -115,6 +115,7 @@ module FileDrop =
             import_queue.Request(task,
                 function
                 | Ok result ->
+                    File.Delete(path)
                     Notifications.task_feedback (
                         Icons.CHECK,
                         %"notification.import_success",

@@ -112,12 +112,12 @@ type Toolbar() =
 
                         InlaidButton(%"menu.stats", fun () -> StatsPage().Show())
                             .Icon(Icons.TRENDING_UP)
-                            .Hotkey("stats"),
+                            .Hotkey("stats")
 
-                        InlaidButton(%"menu.wiki", WikiBrowserPage.Show)
-                            .Icon(Icons.BOOK_OPEN)
-                            .Hotkey("wiki")
-                            .Conditional(fun () -> Screen.current_type = ScreenType.MainMenu)
+                        // InlaidButton(%"menu.wiki", WikiBrowserPage.Show)
+                        //     .Icon(Icons.BOOK_OPEN)
+                        //     .Hotkey("wiki")
+                        //     .Conditional(fun () -> Screen.current_type = ScreenType.MainMenu)
                     ),
 
                 NetworkStatus()
