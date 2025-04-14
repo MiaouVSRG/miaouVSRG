@@ -1,4 +1,4 @@
-<img src="https://github.com/MiaouVSRG/miaouVSRG-to-delete/blob/master/interlude/src/Resources/default/Textures/LOGO%20RAW.png" align="left" height="400">
+<img src="https://github.com/MiaouVSRG/MiaouVSRG/blob/master/interlude/src/Resources/default/Textures/LOGO%20RAW.png" align="left" height="400">
 
 ### MiaouVSRG
 
