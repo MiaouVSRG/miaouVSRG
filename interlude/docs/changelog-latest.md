@@ -1,13 +1,20 @@
-0.7.27.13
+0.7.28
 ====
 
-Hi it's me again
+When you don't see it :(
 
 # Improvements
-- Experimental change to the engine/frame cap, to see if it affects the Intel Crash of Death
-- You can now view wider "slices" of the score graph when holding shift + hovering
-- New option to show timestamps next to PBs on the song wheel (found in Level select options)
-- You can now change the osu! hold mechanics to something else via the ruleset editor
+- New setting to normalise short holds, to prevent visual issues with high values of Hold Note Trim
+- Overhaul to import/library menus, mainly to improve the process of adding and removing links to other game's songs
+- 'Vacuum' is no longer a hidden console command and can be run from the library menu
+- Mod status is shown to remind you as you enter gameplay
+- Some options have moved to better places, such as quit-out behaviour now being on the Gameplay options tab
+- Column swap mod now shows columns as its shorthand, and scores now save
+- Type `*` in the options menu search to see all possible search results
+- All delete buttons are now red
+- Various other small and subtle UI improvements
 
-Editing osu! scorev1 LN windows still can't be done ingame but this will help players who are trying to modify an osu! ruleset to emulate ScoreV2
+# Bug fixes
+- Fixed black seams showing under certain circumstances with hold notes and other textures
+- Reverted a change from last update that worsened windowed-mode latency for some users
 

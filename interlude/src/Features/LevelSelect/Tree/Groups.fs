@@ -9,12 +9,10 @@ open Prelude.Data.Library
 open Interlude.UI
 open Interlude.Content
 
-open TreeState
+type private GroupItem(tree_ctx: TreeContext, name: string, items: ResizeArray<ChartItem>, group_ctx: LibraryGroupContext) =
+    inherit TreeItem(tree_ctx)
 
-type private GroupItem(name: string, items: ResizeArray<ChartItem>, context: LibraryGroupContext) =
-    inherit TreeItem()
-
-    let display_name = if context = LibraryGroupContext.Likes then  %"library.likes" else name
+    let display_name = if group_ctx = LibraryGroupContext.Likes then  %"library.likes" else name
 
     let charts_as_seq = items |> Seq.map (fun i -> i.Chart, i.Context)
 
@@ -22,7 +20,7 @@ type private GroupItem(name: string, items: ResizeArray<ChartItem>, context: Lib
     let select_animation = Animation.Fade(0.0f)
     let mutable label = ""
     let special_color =
-        match context with
+        match group_ctx with
         | LibraryGroupContext.None -> None
         | LibraryGroupContext.Pack _ -> None
         | LibraryGroupContext.Table _ -> None
@@ -31,10 +29,10 @@ type private GroupItem(name: string, items: ResizeArray<ChartItem>, context: Lib
         | LibraryGroupContext.Playlist _ -> Some (Colors.green, Colors.green_shadow)
 
     let update_cached_info () =
-        last_cached_flag <- cache_flag
+        last_cached_flag <- tree_ctx.CacheFlag
 
         label <-
-            match context with
+            match group_ctx with
             | LibraryGroupContext.Folder id ->
                 match Content.Collections.GetFolder id with
                 | Some folder -> sprintf "%s %i" folder.Icon.Value items.Count
@@ -59,30 +57,31 @@ type private GroupItem(name: string, items: ResizeArray<ChartItem>, context: Lib
 
     do update_cached_info ()
 
-    override this.Bounds(top: float32) =
+    override this.Bounds(this_top: float32) =
         Rect.FromEdges(
-            Render.width() * (0.5f - 0.05f * select_animation.Value),
-            top,
+            Render.width() * (TREE_LEFT_SPLIT + 0.1f - 0.05f * select_animation.Value),
+            this_top,
             Render.width() - 25.0f,
-            top + GROUP_HEIGHT
+            this_top + GROUP_HEIGHT
         )
 
-    override this.Selected = selected_group = (name, context)
-    override this.Spacing = 20.0f
+    member this.Selected : bool = tree_ctx.IsGroupSelected(name, group_ctx)
+    override this.Spacing : float32 = GROUP_SPACING
 
-    member this.Items = items
-    member this.Name = name
-    member this.Context = context
-    member this.Expanded = expanded_group = (name, context)
+    member this.Items : ResizeArray<ChartItem> = items
+    member this.Name : string = name
+    member this.Context : LibraryGroupContext = group_ctx
+    member this.Expanded : bool =  tree_ctx.IsGroupExpanded(name, group_ctx)
 
-    member this.SelectFirst() = items.First().Select()
-    member this.SelectLast() = items.Last().Select()
+    member this.SelectFirst() : unit = items.First().Select()
+    member this.SelectLast() : unit = items.Last().Select()
 
-    member private this.OnDraw(bounds: Rect) =
+    /// Only called if this group can be seen on screen
+    member private this.DrawCulled(bounds: Rect) : unit =
 
         let color, bg_color =
-            match multi_selection with
-            | Some s when s.GroupAmountSelected(name, context, charts_as_seq) <> AmountSelected.None ->
+            match tree_ctx.MultiSelection with
+            | Some s when s.GroupAmountSelected(name, group_ctx, charts_as_seq) <> AmountSelected.None ->
                 Colors.grey_2.O2, Colors.shadow_2.O2
             | _ ->
             match special_color with
@@ -100,10 +99,10 @@ type private GroupItem(name: string, items: ResizeArray<ChartItem>, context: Lib
 
         Render.rect bounds color
 
-        match multi_selection with
+        match tree_ctx.MultiSelection with
         | Some s ->
             let filled_icon, name_color =
-                match s.GroupAmountSelected(name, context, charts_as_seq) with
+                match s.GroupAmountSelected(name, group_ctx, charts_as_seq) with
                 | AmountSelected.None -> Icons.SQUARE, Colors.text_subheading
                 | AmountSelected.Some -> Icons.PLUS_SQUARE, Colors.text_yellow_2
                 | AmountSelected.All -> Icons.CHECK_SQUARE, Colors.text_yellow_2
@@ -114,106 +113,106 @@ type private GroupItem(name: string, items: ResizeArray<ChartItem>, context: Lib
             Text.fill_b (Style.font, display_name, bounds.Shrink(15.0f, 5.0f).ShrinkR(100.0f), Colors.text, Alignment.LEFT)
             Text.fill_b (Style.font, label, bounds.Shrink(15.0f, 5.0f), Colors.text_subheading, Alignment.RIGHT)
 
-    member this.Draw(top: float32, origin: float32, originB: float32) : float32 =
-        let b = this.CheckBounds(top, origin, originB, this.OnDraw)
+    member this.Draw(this_top: float32, tree_top: float32, tree_bottom: float32) : float32 =
+        let next_top = this.IfVisible(this_top, tree_top, tree_bottom, this.DrawCulled)
 
         if this.Expanded then
-            let h = CHART_HEIGHT + 5.0f
+            let padded_chart_height = CHART_HEIGHT + CHART_SPACING
 
-            let mutable index = (origin - b) / h |> floor |> int |> max 0
+            let first_visible_chart_index = (tree_top - next_top) / padded_chart_height |> floor |> int |> max 0
+            let mutable chart_index = first_visible_chart_index
 
-            let mutable p = b + float32 index * h
+            let mutable top_edge = next_top + float32 chart_index * padded_chart_height
 
-            while p < originB && index < items.Count do
-                p <- items.[index].Draw(p, origin, originB)
-                index <- index + 1
+            while top_edge < tree_bottom && chart_index < items.Count do
+                top_edge <- items.[chart_index].Draw(top_edge, tree_top, tree_bottom)
+                chart_index <- chart_index + 1
 
-            let b2 = b + float32 items.Count * h
+            let expanded_next_top = next_top + float32 items.Count * padded_chart_height
 
-            if b < origin && b2 > origin then
+            if next_top < tree_top && expanded_next_top > tree_top then
                 Text.draw_aligned_b (
                     Style.font,
                     name,
                     20.0f,
                     Render.width() - 20f,
-                    origin + 10.0f,
+                    tree_top + 10.0f,
                     Colors.text,
                     Alignment.RIGHT
                 )
 
-            b2
+            expanded_next_top
         else
-            b
+            next_top
 
-    member private this.OnUpdate(origin: float32, bounds: Rect, elapsed_ms: float) =
-        if Mouse.hover bounds then
-            if this.LeftClick(origin) then
+    /// Only called if the group can be seen on screen
+    member private this.UpdateCulled(tree_top: float32, bounds: Rect) : unit =
+        if Mouse.hover(bounds) then
+
+            if this.LeftClicked(tree_top) then
                 if MULTI_SELECT_KEY.Held() then
-                    match multi_selection with
-                    | Some s when s.GroupAmountSelected(name, context, charts_as_seq) = AmountSelected.All ->
-                        deselect_multiple charts_as_seq
-                    | _ -> select_multiple charts_as_seq
+                    tree_ctx.ToggleMultiSelect(name, group_ctx, charts_as_seq)
                 elif this.Expanded then
-                    expanded_group <- "", LibraryGroupContext.None
+                    tree_ctx.ExpandedGroup <- "", LibraryGroupContext.None
                 else
-                    expanded_group <- name, context
-                    scroll_to <- ScrollTo.Group (name, context)
-            elif this.RightClick(origin) then
-                match multi_selection with
-                | Some s when s.GroupAmountSelected(name, context, charts_as_seq) <> AmountSelected.None -> s.ShowActions()
-                | _ -> GroupContextMenu.Show(name, items |> Seq.map (fun (x: ChartItem) -> x.Chart), context)
+                    tree_ctx.ExpandedGroup <- name, group_ctx
+                    tree_ctx.ScrollTo <- ScrollTo.Group (name, group_ctx)
+
+            elif this.RightClicked(tree_top) then
+                match tree_ctx.MultiSelection with
+                | Some s when s.GroupAmountSelected(name, group_ctx, charts_as_seq) <> AmountSelected.None -> s.ShowActions()
+                | _ -> GroupContextMenu.Show(name, items |> Seq.map (fun (x: ChartItem) -> x.Chart), group_ctx)
+
             elif (%%"delete").Pressed() then
-                match context with
-                | LibraryGroupContext.Folder _
+                match group_ctx with
+                | LibraryGroupContext.Folder _ // todo: show prompt for deleting folder/playlist?
                 | LibraryGroupContext.Playlist _
                 | LibraryGroupContext.Likes
                 | LibraryGroupContext.Table _ -> ()
                 | LibraryGroupContext.Pack _
-                | LibraryGroupContext.None -> GroupContextMenu.ConfirmDelete(items |> Seq.map (fun (x: ChartItem) -> x.Chart), context, false)
+                | LibraryGroupContext.None -> GroupContextMenu.ConfirmDelete(items |> Seq.map (fun (x: ChartItem) -> x.Chart), group_ctx, false)
 
-    member this.Update(top: float32, origin: float32, originB: float32, elapsed_ms: float) : float32 =
-        if last_cached_flag < cache_flag then
+    member this.Update(this_top: float32, tree_top: float32, tree_bottom: float32, elapsed_ms: float) : float32 =
+        if last_cached_flag < tree_ctx.CacheFlag then
             update_cached_info ()
 
         select_animation.Target <- if this.Selected then 1.0f else 0.0f
         select_animation.Update elapsed_ms
 
-        match scroll_to with
-        | ScrollTo.Group (a, b) when (a, b) = (name, context) ->
+        match tree_ctx.ScrollTo with
+        | ScrollTo.Group (a, b) when (a, b) = (name, group_ctx) ->
             if this.Expanded then
-                scroll (-top + origin + 185.0f)
+                tree_ctx.Scroll(-this_top + tree_top + 185.0f)
             else
-                scroll (-top + origin + 400.0f)
+                tree_ctx.Scroll(-this_top + tree_top + 400.0f)
 
-            scroll_to <- ScrollTo.Nothing
+            tree_ctx.ScrollTo <- ScrollTo.Nothing
         | _ -> ()
 
-        let b =
-            this.CheckBounds(top, origin, originB, (fun b -> this.OnUpdate(origin, b, elapsed_ms)))
+        let next_top =
+            this.IfVisible(this_top, tree_top, tree_bottom, (fun b -> this.UpdateCulled(tree_top, b)))
 
         if this.Expanded then
 
             if (%%"group_multi_select").Pressed() then
-                match multi_selection with
-                | Some s when s.GroupAmountSelected(name, context, charts_as_seq) = AmountSelected.All ->
-                    deselect_multiple charts_as_seq
-                | _ -> select_multiple charts_as_seq
+                tree_ctx.ToggleMultiSelect(name, group_ctx, charts_as_seq)
 
-            let h = CHART_HEIGHT + 5.0f
+            let padded_chart_height = CHART_HEIGHT + CHART_SPACING
 
-            if scroll_to = ScrollTo.Chart && this.Selected then
+            if tree_ctx.ScrollTo = ScrollTo.Chart && this.Selected then
                 match Seq.tryFindIndex (fun (s: ChartItem) -> s.Selected) items with
-                | Some i -> scroll (-(b + float32 i * h) + 500.0f)
+                | Some i -> tree_ctx.Scroll (-(next_top + float32 i * padded_chart_height) + 500.0f)
                 | None -> ()
-                scroll_to <- ScrollTo.Nothing
+                tree_ctx.ScrollTo <- ScrollTo.Nothing
 
-            let mutable index = (origin - b) / h |> floor |> int |> max 0
-            let mutable p = b + float32 index * h
+            let first_visible_chart_index = (tree_top - next_top) / padded_chart_height |> floor |> int |> max 0
+            let mutable chart_index = first_visible_chart_index
+            let mutable top_edge = next_top + float32 chart_index * padded_chart_height
 
-            while p < originB && index < items.Count do
-                p <- items.[index].Update(p, origin, originB, elapsed_ms)
-                index <- index + 1
+            while top_edge < tree_bottom && chart_index < items.Count do
+                top_edge <- items.[chart_index].Update(top_edge, tree_top, tree_bottom, elapsed_ms)
+                chart_index <- chart_index + 1
 
-            b + float32 items.Count * h
+            next_top + float32 items.Count * padded_chart_height
         else
-            b
+            next_top

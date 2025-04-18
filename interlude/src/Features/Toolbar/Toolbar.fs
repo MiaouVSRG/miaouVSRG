@@ -15,6 +15,7 @@ open Interlude.Features.Gameplay
 open Interlude.Features.Stats
 open Interlude.Features.Wiki
 open Interlude.Features.OptionsMenu
+open Interlude.Features.OptionsMenu.Library
 open Interlude.Features.Printerlude
 
 type Toolbar() =
@@ -57,7 +58,7 @@ type Toolbar() =
     let import_button =
         InlaidButton(
             %"menu.import",
-            (fun () -> ImportsMenuPage().Show())
+            (fun () -> ImportsPage().Show())
         )
             .Icon(Icons.DOWNLOAD)
             .Hotkey("import")
@@ -66,7 +67,7 @@ type Toolbar() =
                     .Position(Position.BorderB(Style.PADDING))
             )
 
-    override this.Init(parent) =
+    override this.Init(parent: Widget) =
         container
             // Bottom right info
             .With(
@@ -105,7 +106,7 @@ type Toolbar() =
                     .DisableNavigation()
                     .Position(Position.SliceT(InlaidButton.HEIGHT).ShrinkL(HEIGHT + Style.PADDING * 4.0f))
                     .With(
-                        InlaidButton(%"menu.options", fun () -> OptionsMenuPage().Show())
+                        InlaidButton(%"menu.options", fun () -> OptionsPage().Show())
                             .Icon(Icons.SETTINGS),
 
                         import_button,
@@ -193,7 +194,7 @@ type Toolbar() =
             Toolbar.take_screenshot()
 
         if (Screen.current_type = ScreenType.Score || not Toolbar.hidden) && (%%"options").Pressed() then
-            OptionsMenuPage().Show()
+            OptionsPage().Show()
         if (Screen.current_type = ScreenType.Score || not Toolbar.hidden) && (%%"quick_menu").Pressed() then
             QuickMenuPage().Show()
 

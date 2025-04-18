@@ -10,9 +10,13 @@ open Interlude.Content
 open Interlude.Options
 open Interlude.Features.Gameplay
 
-open TreeState
-
 module Tree =
+
+    let private tree_ctx = TreeContext.Create
+
+    let debounce() = tree_ctx.ClickDebounce <- 500.0
+    let multi_selection() = tree_ctx.MultiSelection
+    let clear_multi_selection() = tree_ctx.MultiSelection <- None
 
     let mutable private groups: GroupItem list = []
     let mutable private last_item: ChartItem option = None
@@ -38,13 +42,13 @@ module Tree =
         |> function
         | Some (ctx, group) ->
             SelectedChart.LIBRARY_CTX <- ctx
-            selected_chart <- chart_meta.Hash
-            selected_group <- group.Name, group.Context
-            expanded_group <- selected_group
-            scroll_to <- ScrollTo.Chart
+            tree_ctx.SelectedChart <- chart_meta.Hash
+            tree_ctx.SelectedGroup <- group.Name, group.Context
+            tree_ctx.ExpandedGroup <- tree_ctx.SelectedGroup
+            tree_ctx.ScrollTo <- ScrollTo.Chart
         | None ->
-            selected_chart <- ""
-            selected_group <- "", LibraryGroupContext.None
+            tree_ctx.SelectedChart <- ""
+            tree_ctx.SelectedGroup <- "", LibraryGroupContext.None
 
     let refresh () : unit =
         // fetch groups
@@ -76,8 +80,8 @@ module Tree =
             if group.Charts.Length = 1 then
                 let chart_meta, context = group.Charts.[0]
 
-                if chart_meta.Hash <> selected_chart then
-                    switch_chart (chart_meta, context, group_name, group.Context)
+                if chart_meta.Hash <> tree_ctx.SelectedChart then
+                    tree_ctx.SelectChart(chart_meta, context, group_name, group.Context)
         // build groups ui
         last_item <- None
 
@@ -86,26 +90,26 @@ module Tree =
             |> Seq.map (fun (group_name, group) ->
                 group.Charts
                 |> Seq.map (fun (chart_meta, context) ->
-                    let i = ChartItem(group_name, group.Context, chart_meta, context)
+                    let i = ChartItem(tree_ctx, group_name, group.Context, chart_meta, context)
                     last_item <- Some i
                     i
                 )
                 |> ResizeArray
-                |> fun l -> GroupItem(group_name, l, group.Context)
+                |> fun l -> GroupItem(tree_ctx, group_name, l, group.Context)
             )
             |> List.ofSeq
 
         find_selected_chart_in_tree()
 
         is_empty <- List.isEmpty groups
-        cache_flag <- 0
-        click_debounce <- 500.0
-        multi_selection <- None
+        tree_ctx.CacheFlag <- 0
+        tree_ctx.ClickDebounce <- 500.0
+        tree_ctx.MultiSelection <- None
 
     do
         LevelSelect.on_refresh_all.Add refresh
-        LevelSelect.on_refresh_details.Add(fun () -> cache_flag <- cache_flag + 1)
-        SelectedChart.on_chart_change_started.Add(fun info -> if info.ChartMeta.Hash <> selected_chart then find_selected_chart_in_tree())
+        LevelSelect.on_refresh_details.Add(fun () -> tree_ctx.CacheFlag <- tree_ctx.CacheFlag + 1)
+        SelectedChart.on_chart_change_started.Add(fun info -> if info.ChartMeta.Hash <> tree_ctx.SelectedChart then find_selected_chart_in_tree())
 
     let previous () : unit =
         match last_item with
@@ -182,84 +186,84 @@ module Tree =
                 g.SelectLast()
 
     let start_drag_scroll () : unit =
-        currently_drag_scrolling <- true
-        drag_scroll_position <- Mouse.y ()
-        drag_scroll_distance <- 0.0f
+        tree_ctx.CurrentlyDragScrolling <- true
+        tree_ctx.DragScrollPosition <- Mouse.y ()
+        tree_ctx.DragScrollDistance <- 0.0f
         scroll_fade.Target <- 1.0f
 
     let finish_drag_scroll () : unit =
-        currently_drag_scrolling <- false
+        tree_ctx.CurrentlyDragScrolling <- false
         scroll_fade.Target <- 0.0f
 
     let update_drag_scroll (origin: float32, total_height: float32, tree_height: float32) : unit =
-        let d = Mouse.y () - drag_scroll_position
-        drag_scroll_position <- Mouse.y ()
-        drag_scroll_distance <- drag_scroll_distance + abs d
+        let d = Mouse.y () - tree_ctx.DragScrollPosition
+        tree_ctx.DragScrollPosition <- Mouse.y ()
+        tree_ctx.DragScrollDistance <- tree_ctx.DragScrollDistance + abs d
 
         if Mouse.held Mouse.RIGHT then
-            if drag_scroll_distance > DRAG_THRESHOLD then
-                scroll_pos.Target <- -(Mouse.y () - origin) / total_height * tree_height
+            if tree_ctx.DragScrollDistance > DRAG_THRESHOLD then
+                tree_ctx.ScrollPosition.Target <- -(Mouse.y () - origin) / total_height * tree_height
         elif Mouse.held Mouse.LEFT then
-            if drag_scroll_distance > DRAG_THRESHOLD then
-                scroll_pos.Target <- scroll_pos.Target + d * DRAG_LEFTCLICK_SCALE
+            if tree_ctx.DragScrollDistance > DRAG_THRESHOLD then
+                tree_ctx.ScrollPosition.Target <- tree_ctx.ScrollPosition.Target + d * DRAG_LEFTCLICK_SCALE
         else
             finish_drag_scroll ()
 
     let update (origin: float32, originB: float32, elapsed_ms: float) : unit =
-        scroll_pos.Update elapsed_ms
+        tree_ctx.ScrollPosition.Update elapsed_ms
         scroll_fade.Update elapsed_ms
 
         if Dialog.exists () then
             ()
         elif (%%"context_menu").Pressed() && SelectedChart.CACHE_DATA.IsSome then
-            match multi_selection with
+            match tree_ctx.MultiSelection with
             | Some s -> s.ShowActions()
             | None ->
 
             match SelectedChart.CACHE_DATA with
             | Some chart_meta -> ChartContextMenu(chart_meta, SelectedChart.LIBRARY_CTX).Show()
             | _ -> ()
-        elif (%%"clear_multi_select").Pressed() then multi_selection <- None
+        elif (%%"clear_multi_select").Pressed() then tree_ctx.MultiSelection <- None
         else
 
-            if (%%"up").Pressed() && expanded_group <> ("", LibraryGroupContext.None) then
-                scroll_to <- ScrollTo.Group expanded_group
-                expanded_group <- ("", LibraryGroupContext.None)
+            if (%%"up").Pressed() && tree_ctx.ExpandedGroup <> ("", LibraryGroupContext.None) then
+                tree_ctx.ScrollTo <- ScrollTo.Group tree_ctx.ExpandedGroup
+                tree_ctx.ExpandedGroup <- ("", LibraryGroupContext.None)
 
-            if (%%"down").Pressed() && expanded_group = ("", LibraryGroupContext.None) && selected_group <> ("", LibraryGroupContext.None) then
-                expanded_group <- selected_group
-                scroll_to <- ScrollTo.Group expanded_group
+            if (%%"down").Pressed() && tree_ctx.ExpandedGroup = ("", LibraryGroupContext.None) && tree_ctx.SelectedGroup <> ("", LibraryGroupContext.None) then
+                tree_ctx.ExpandedGroup <- tree_ctx.SelectedGroup
+                tree_ctx.ScrollTo <- ScrollTo.Group tree_ctx.ExpandedGroup
 
             let bottom_edge =
-                List.fold (fun t (i: GroupItem) -> i.Update(t, origin, originB, elapsed_ms)) scroll_pos.Value groups
+                List.fold (fun t (i: GroupItem) -> i.Update(t, origin, originB, elapsed_ms)) tree_ctx.ScrollPosition.Value groups
 
             let total_height = originB - origin
-            let tree_height = bottom_edge - scroll_pos.Value
+            let tree_height = bottom_edge - tree_ctx.ScrollPosition.Value
 
             let mx, my = Mouse.pos ()
 
-            if currently_drag_scrolling then
+            if tree_ctx.CurrentlyDragScrolling then
                 update_drag_scroll (origin, total_height, tree_height)
             elif mx > Render.width() * 0.2f && my < originB && my > origin && (Mouse.left_clicked () || Mouse.right_clicked ()) then
                 start_drag_scroll ()
             elif mx < Render.width() * 0.2f then
-                if not scroll_to_chart_once then
-                    scroll_to <- ScrollTo.Chart
-                    scroll_to_chart_once <- true
+                if not tree_ctx.ScrollToChartOnce then
+                    tree_ctx.ScrollTo <- ScrollTo.Chart
+                    tree_ctx.ScrollToChartOnce <- true
             else
-                scroll_to_chart_once <- false
+                tree_ctx.ScrollToChartOnce <- false
 
-            if click_debounce > 0.0 then
-                click_debounce <- click_debounce - elapsed_ms
+            if tree_ctx.ClickDebounce > 0.0 then
+                tree_ctx.ClickDebounce <- tree_ctx.ClickDebounce - elapsed_ms
 
             let lo = total_height - tree_height - origin
             let hi = 20.0f + origin
-            scroll_pos.Target <- min hi (max lo (scroll_pos.Target + Mouse.scroll () * 100.0f))
+            tree_ctx.ScrollPosition.Target <- min hi (max lo (tree_ctx.ScrollPosition.Target + Mouse.scroll () * 100.0f))
 
-            if scroll_pos.Value < lo then
-                scroll_pos.Value <- lo
-            elif scroll_pos.Value > hi then
-                scroll_pos.Value <- hi
+            if tree_ctx.ScrollPosition.Value < lo then
+                tree_ctx.ScrollPosition.Value <- lo
+            elif tree_ctx.ScrollPosition.Value > hi then
+                tree_ctx.ScrollPosition.Value <- hi
 
     let draw (origin: float32, originB: float32) : unit =
 
@@ -271,7 +275,7 @@ module Tree =
         Render.stencil_begin_draw ()
 
         let bottom_edge =
-            List.fold (fun t (i: GroupItem) -> i.Draw(t, origin, originB)) scroll_pos.Value groups
+            List.fold (fun t (i: GroupItem) -> i.Draw(t, origin, originB)) tree_ctx.ScrollPosition.Value groups
 
         Render.stencil_finish ()
 
@@ -283,10 +287,10 @@ module Tree =
             (Colors.shadow_2.O3a scroll_fade.Alpha)
 
         let total_height = originB - origin
-        let tree_height = bottom_edge - scroll_pos.Value
+        let tree_height = bottom_edge - tree_ctx.ScrollPosition.Value
         let lower_bound = total_height - tree_height - origin
         let upper_bound = 20.0f + origin
-        let scroll_bar_pos = -(scroll_pos.Value - upper_bound) / (upper_bound - lower_bound) * (total_height - 30.0f - 50.0f)
+        let scroll_bar_pos = -(tree_ctx.ScrollPosition.Value - upper_bound) / (upper_bound - lower_bound) * (total_height - 30.0f - 50.0f)
 
         Render.rect_edges
             (screen_bounds.Right - 10.0f)

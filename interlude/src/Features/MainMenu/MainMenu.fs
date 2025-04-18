@@ -120,8 +120,8 @@ type MainMenuScreen() =
     let options_button =
         MenuButton(
             %"menu.options",
-            (fun () -> OptionsMenuPage().Show()),
-            Position.Box(0.0f, 0.5f, -300.0f, -50.0f, 1470.0f, 100.0f)
+            (fun () -> OptionsPage().Show()),
+            Position.Box(0.0f, 0.5f, -300.0f, -50.0f, 1430.0f, 100.0f)
         )
 
     let quit_button =
@@ -179,7 +179,7 @@ type MainMenuScreen() =
         if prev = ScreenType.SplashScreen then
 
             if Data.Maintenance.Patterns.recalculate_needed Content.Charts then
-                Library.Library.recalculate_patterns()
+                Library.LibraryActions.recalculate_patterns()
 
             // if TOTAL_STATS.NotesHit = 0 then
             //     // todo: quick start wizard instead

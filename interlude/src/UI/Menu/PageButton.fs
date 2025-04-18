@@ -37,7 +37,7 @@ type PageButton(localised_text: string, on_click: unit -> unit) as this =
                         else this.TextColor()
                     )
                     .Align(Alignment.LEFT)
-                    .Position(Position.Shrink(Style.PADDING)),
+                    .Position(Position.Shrink(15.0f, Style.PADDING)),
 
                 MouseListener().Button(this)
             )
@@ -46,7 +46,7 @@ type PageButton(localised_text: string, on_click: unit -> unit) as this =
                 Text(sprintf "%s: %O" (%"misc.hotkeyhint") this.Hotkey)
                     .Color(Colors.text_cyan)
                     .Align(Alignment.RIGHT)
-                    .Position(Position.Shrink(10.0f, 5.0f))
+                    .Position(Position.Shrink(15.0f, Style.PADDING))
             )
 
         base.Init parent
@@ -91,6 +91,11 @@ type PageButton(localised_text: string, on_click: unit -> unit) as this =
 
 [<Extension>]
 type PageButtonExtensions =
+
+    [<Extension>]
+    static member Icon (button: PageButton, icon: string) : PageButton =
+        button.Icon <- icon
+        button
 
     [<Extension>]
     static member Hotkey (button: PageButton, hotkey: Hotkey) : PageButton =

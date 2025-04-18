@@ -2,7 +2,6 @@
 
 open Percyqaz.Common
 open Percyqaz.Flux.UI
-open Percyqaz.Flux.Graphics
 open Prelude
 open Interlude.Content
 open Interlude.Options
@@ -20,14 +19,14 @@ type SelectRulesetPage() =
         container
         |+ PageButton(
             %"rulesets.add",
-            (fun () -> AddRulesetsPage().Show()),
-            Icon = Icons.DOWNLOAD
+            fun () -> AddRulesetsPage().Show()
         )
+            .Icon(Icons.DOWNLOAD)
         |+ PageButton(
             %"rulesets.open_folder",
-            (fun () -> open_directory (get_game_folder "Rulesets")),
-            Icon = Icons.FOLDER
+            fun () -> open_directory (get_game_folder "Rulesets")
         )
+            .Icon(Icons.FOLDER)
         |* Dummy()
 
         for id, ruleset in Rulesets.list () do
@@ -58,6 +57,7 @@ type SelectRulesetPage() =
                     )
                 )
                     .Disabled(Rulesets.DEFAULT_ID = id)
+                    .TextColor(Colors.red_accent)
                     .Position(Position.SliceR(PAGE_ITEM_HEIGHT))
             )
 

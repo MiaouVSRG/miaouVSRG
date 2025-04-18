@@ -19,7 +19,9 @@ module WindowThread =
     let mutable private window: nativeptr<Window> = Unchecked.defaultof<_>
     let ACTION_QUEUE = ThreadActionQueue()
     let is_window_thread() = ACTION_QUEUE.IsCurrent()
-    let defer (action: unit -> unit) : unit = ACTION_QUEUE.Defer action
+    let defer (action: unit -> unit) : unit =
+        ACTION_QUEUE.Defer action
+        GLFW.PostEmptyEvent()
 
     (*
         Monitor detection

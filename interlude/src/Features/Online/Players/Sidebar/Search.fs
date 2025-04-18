@@ -8,9 +8,11 @@ open Interlude.UI
 open Interlude.Web.Shared.Requests
 open Interlude.Features.Online
 
-module SearchList =
+type SearchList =
 
-    let create () : NavigationContainer.Column =
+    static let SEARCH_BOX_HEIGHT = 50.0f
+
+    static member Create() : NavigationContainer.Column =
 
         let query = Setting.simple ""
         let searcher =
@@ -33,12 +35,14 @@ module SearchList =
                         this.SetData { Matches = [||] }
                 , fun _ data ->
                     if data.Matches.Length > 0 then
-                        let contents = FlowContainer.Vertical<Widget>(60.0f, Spacing = Style.PADDING)
-
-                        for player in data.Matches do
-                            contents.Add(PlayerButton(player.Username, player.Color))
-
-                        ScrollContainer(contents) :> Widget
+                        FlowContainer.Vertical<PlayerButton>(PlayerButton.HEIGHT)
+                            .Spacing(Style.PADDING)
+                            .With(seq{
+                                for player in data.Matches do
+                                    yield PlayerButton(player.Username, player.Color)
+                            })
+                        |> ScrollContainer
+                        :> Widget
                     else
                         EmptyState(
                             Icons.SEARCH,
@@ -48,9 +52,11 @@ module SearchList =
                                 %"online.players.search.empty_search_bar"
                         )
                 )
-                .Position(Position.ShrinkT(60.0f))
 
         NavigationContainer.Column()
-        |+ SearchBox(query, (fun (_: string) -> searcher.Reload()))
-            .Position(Position.Shrink(5.0f).SliceT(50.0f))
-        |+ searcher
+            .With(
+                SearchBox(query, (fun (_: string) -> searcher.Reload()))
+                    .Position(Position.Shrink(5.0f).SliceT(SEARCH_BOX_HEIGHT)),
+                searcher
+                    .Position(Position.ShrinkT(SEARCH_BOX_HEIGHT + Style.PADDING * 2.0f))
+            )

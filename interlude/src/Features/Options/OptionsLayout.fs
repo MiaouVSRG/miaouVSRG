@@ -19,7 +19,7 @@ type private Transition =
     | Hidden
 
 [<RequireQualifiedAccess>]
-type private OptionsMenuTab =
+type private OptionsTab =
     | System
     | Gameplay
     | Library
@@ -28,9 +28,9 @@ type private OptionsMenuTab =
 
 module private State =
 
-    let mutable recent_tab = OptionsMenuTab.System
+    let mutable recent_tab = OptionsTab.System
 
-type private OptionsMenuHeader(current_tab: Setting<OptionsMenuTab>) as this =
+type private OptionsPageHeader(current_tab: Setting<OptionsTab>) as this =
     inherit Container(NodeType.Container(fun () -> Some this.Buttons))
 
     let HEIGHT = 90.0f
@@ -41,36 +41,32 @@ type private OptionsMenuHeader(current_tab: Setting<OptionsMenuTab>) as this =
         { Position.DEFAULT with Left = pc %+ offset; Right = (1.0f - pc) %- offset }
 
     let tab_buttons =
-        DynamicFlowContainer.LeftToRight()
+        FlowContainer.LeftToRight(200.0f)
             .Spacing(Style.PADDING * 2.0f)
             .Position(scaled_margins.SliceY(SearchBox.HEIGHT))
             .With(
                 OptionsMenuButton(
                     sprintf "%s %s" Icons.SLIDERS (%"gameplay"),
-                    200.0f,
-                    (fun () -> current_tab.Set OptionsMenuTab.Gameplay),
-                    IsHighlighted = (fun () -> current_tab.Value = OptionsMenuTab.Gameplay),
+                    (fun () -> current_tab.Set OptionsTab.Gameplay),
+                    IsHighlighted = (fun () -> current_tab.Value = OptionsTab.Gameplay),
                     Keybind = Bind.mk Keys.D1
                 ),
                 OptionsMenuButton(
                     sprintf "%s %s" Icons.AIRPLAY (%"system"),
-                    200.0f,
-                    (fun () -> current_tab.Set OptionsMenuTab.System),
-                    IsHighlighted = (fun () -> current_tab.Value = OptionsMenuTab.System),
+                    (fun () -> current_tab.Set OptionsTab.System),
+                    IsHighlighted = (fun () -> current_tab.Value = OptionsTab.System),
                     Keybind = Bind.mk Keys.D2
                 ),
                 OptionsMenuButton(
                     sprintf "%s %s" Icons.IMAGE (%"skins"),
-                    200.0f,
-                    (fun () -> current_tab.Set OptionsMenuTab.Noteskins),
-                    IsHighlighted = (fun () -> current_tab.Value = OptionsMenuTab.Noteskins),
+                    (fun () -> current_tab.Set OptionsTab.Noteskins),
+                    IsHighlighted = (fun () -> current_tab.Value = OptionsTab.Noteskins),
                     Keybind = Bind.mk Keys.D3
                 ),
                 OptionsMenuButton(
                     sprintf "%s %s" Icons.ARCHIVE (%"library"),
-                    200.0f,
-                    (fun () -> current_tab.Set OptionsMenuTab.Library),
-                    IsHighlighted = (fun () -> current_tab.Value = OptionsMenuTab.Library),
+                    (fun () -> current_tab.Set OptionsTab.Library),
+                    IsHighlighted = (fun () -> current_tab.Value = OptionsTab.Library),
                     Keybind = Bind.mk Keys.D4
                 )
             )
@@ -78,7 +74,7 @@ type private OptionsMenuHeader(current_tab: Setting<OptionsMenuTab>) as this =
     let search_box =
         SearchBox(fun query ->
             if query = "" then current_tab.Set State.recent_tab
-            else current_tab.Set (OptionsMenuTab.SearchResults <| SearchResults.get query)
+            else current_tab.Set (OptionsTab.SearchResults <| SearchResults.get query)
         )
             .Fill(Colors.cyan.O3)
             .Border(Colors.cyan_accent)
@@ -96,7 +92,7 @@ type private OptionsMenuHeader(current_tab: Setting<OptionsMenuTab>) as this =
 
     member private this.Buttons = tab_buttons
 
-    override this.Init(parent) =
+    override this.Init(parent: Widget) =
         this
             .Position(Position.SliceT(HEIGHT))
             .Add(search_box, tab_buttons)
@@ -125,7 +121,7 @@ type private OptionsMenuHeader(current_tab: Setting<OptionsMenuTab>) as this =
 
             Render.stencil_begin_draw()
             Render.rect this.Bounds Colors.shadow_2.O1
-            Render.rect (this.Bounds.BorderB Style.PADDING) Colors.cyan_accent.O2
+            Render.rect (this.Bounds.BorderB Style.PADDING) Colors.cyan
             base.Draw()
             StripeWipe.draw_left_to_right (pc2 - 0.05f) pc this.Bounds Colors.cyan
 
@@ -139,7 +135,7 @@ type private OptionsMenuHeader(current_tab: Setting<OptionsMenuTab>) as this =
 
             Render.stencil_begin_draw()
             Render.rect this.Bounds Colors.shadow_2.O1
-            Render.rect (this.Bounds.BorderB Style.PADDING) Colors.cyan_accent.O2
+            Render.rect (this.Bounds.BorderB Style.PADDING) Colors.cyan
             base.Draw()
             StripeWipe.draw_left_to_right (pc - 0.05f) pc2 this.Bounds Colors.cyan
 
@@ -147,7 +143,7 @@ type private OptionsMenuHeader(current_tab: Setting<OptionsMenuTab>) as this =
 
         | Transition.Shown ->
             Render.rect this.Bounds Colors.shadow_2.O1
-            Render.rect (this.Bounds.BorderB Style.PADDING) Colors.cyan_accent.O2
+            Render.rect (this.Bounds.BorderB Style.PADDING) Colors.cyan
             base.Draw()
 
         | Transition.Hidden -> ()
@@ -161,7 +157,7 @@ type private OptionsMenuHeader(current_tab: Setting<OptionsMenuTab>) as this =
         transition_timer.Reset()
         transition <- Transition.In
 
-type private OptionsMenuFooter() as this =
+type private OptionsPageFooter() as this =
     inherit Container(NodeType.Container(fun () -> Some this.Items))
 
     let HEIGHT = 70.0f
@@ -169,11 +165,11 @@ type private OptionsMenuFooter() as this =
     let presets =
         NavigationContainer.Row(WrapNavigation = false)
             .With(
-                PresetSlotControls.Create(1, options.Preset1)
+                PresetControls.Create(1, options.Preset1)
                     .Position(Position.GridX(1, 3, 20.0f)),
-                PresetSlotControls.Create(2, options.Preset2)
+                PresetControls.Create(2, options.Preset2)
                     .Position(Position.GridX(2, 3, 20.0f)),
-                PresetSlotControls.Create(3, options.Preset3)
+                PresetControls.Create(3, options.Preset3)
                     .Position(Position.GridX(3, 3, 20.0f))
             )
             .Position(Position.SlicePercentR(0.5f).SliceB(15.0f, HEIGHT).ShrinkX(25.0f))
@@ -185,7 +181,7 @@ type private OptionsMenuFooter() as this =
                     .Icon(Icons.ARROW_LEFT_CIRCLE)
                     .Position(Position.SliceB(HEIGHT).SliceY(InlaidButton.HEIGHT).SliceL(10.0f, 180.0f)),
 
-                InlaidButton(%"noteskin.edit", Skinning.edit_or_extract_noteskin)
+                InlaidButton(%"noteskin.edit", SkinActions.edit_or_extract_noteskin)
                     .Icon(Icons.IMAGE)
                     .Position(
                         Position
@@ -197,7 +193,7 @@ type private OptionsMenuFooter() as this =
                     ),
 
                 InlaidButton(%"hud.edit", fun () ->
-                    Skinning.edit_hud ignore
+                    SkinActions.edit_hud ignore
                 )
                     .Icon(Icons.ZAP)
                     .Position(
@@ -214,11 +210,11 @@ type private OptionsMenuFooter() as this =
 
     member this.Items = content
 
-    override this.Init(parent) =
+    override this.Init(parent: Widget) =
         this.With(content).Position <- Position.SliceB HEIGHT
         base.Init parent
 
     override this.Draw() =
         Render.rect this.Bounds Colors.shadow_2.O1
-        Render.rect (this.Bounds.BorderT Style.PADDING) Colors.cyan_accent.O2
+        Render.rect (this.Bounds.BorderT Style.PADDING) Colors.cyan
         base.Draw()

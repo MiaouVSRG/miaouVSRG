@@ -6,7 +6,7 @@ open Percyqaz.Flux.UI
 open Prelude
 open Interlude.UI
 
-type private Keybinder(hotkey: Hotkey) as this =
+type private HotkeyBinder(hotkey: Hotkey) as this =
     inherit Container(NodeType.FocusTrap)
 
     let set = fun v -> Hotkeys.set hotkey v
@@ -82,18 +82,17 @@ type HotkeysPage() =
         let hotkey_editor (hotkey: Hotkey) =
             NavigationContainer.Row()
                 .With(
-                    Keybinder(hotkey)
+                    HotkeyBinder(hotkey)
                         .Position(Position.ShrinkR(PAGE_ITEM_HEIGHT)),
                     Button(Icons.REFRESH_CCW, (fun () -> Hotkeys.reset hotkey))
                         .Position(Position.SliceR(PAGE_ITEM_HEIGHT))
                 )
 
         container.Add(
-            PageButton(
-                %"system.hotkeys.reset",
-                (fun () -> ConfirmPage(%"system.hotkeys.reset.confirm", Hotkeys.reset_all).Show()),
-                Icon = Icons.REFRESH_CCW
+            PageButton(%"system.hotkeys.reset", fun () ->
+                ConfirmPage(%"system.hotkeys.reset.confirm", Hotkeys.reset_all).Show()
             )
+                .Icon(Icons.REFRESH_CCW)
         )
 
         for hk in Hotkeys.hotkeys.Keys do
