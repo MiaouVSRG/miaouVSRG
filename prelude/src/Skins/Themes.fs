@@ -118,4 +118,5 @@ module Theme =
             "notify-info"
             "notify-system"
             "notify-task"
+            "score-screen"
         |]

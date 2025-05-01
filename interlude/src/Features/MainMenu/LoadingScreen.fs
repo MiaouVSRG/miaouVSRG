@@ -51,7 +51,7 @@ type LoadingScreen(post_init_thunk: unit -> unit) =
 
         match prev with
         | ScreenType.SplashScreen ->
-            animation.Add(Animation.Action(fun () -> Sounds.get("hello").Play()))
+            //animation.Add(Animation.Action(fun () -> Sounds.get("hello").Play()))
             animation.Add(Animation.Delay 100.0)
             animation.Add(Animation.Action(fun () -> Screen.logo.MoveCenter()))
             animation.Add(Animation.Delay 900.0)
@@ -92,7 +92,7 @@ type LoadingScreen(post_init_thunk: unit -> unit) =
         if closing then
             Text.draw_aligned_b (
                 Style.font,
-                "à bientot ^^",
+                "goodbye ^^",
                 70.0f,
                 this.Bounds.CenterX,
                 40.0f,
@@ -102,7 +102,7 @@ type LoadingScreen(post_init_thunk: unit -> unit) =
         else
             Text.draw_aligned_b (
                 Style.font,
-                "Chargement :3",
+                "loading :3",
                 70.0f,
                 this.Bounds.CenterX,
                 40.0f,

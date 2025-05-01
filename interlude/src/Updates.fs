@@ -94,8 +94,8 @@ module Updates =
 
     let asset_name =
         match RuntimeInformation.OSArchitecture with
-        | Architecture.X64 when OperatingSystem.IsWindows() -> Ok "interlude-win64.zip"
-        | Architecture.X64 when OperatingSystem.IsLinux() -> Ok "interlude-linux-x64.zip"
+        | Architecture.X64 when OperatingSystem.IsWindows() -> Ok "MiaouVSRG-win64.zip"
+        | Architecture.X64 when OperatingSystem.IsLinux() -> Ok "MiaouVSRG-linux-x64.zip"
         | other -> Error other
 
     let private handle_update (release: GithubRelease) : unit =
@@ -110,7 +110,7 @@ module Updates =
                 (int s.[0], int s.[1], int s.[2], 0)
 
         let current = short_version
-        let incoming = release.tag_name.Replace("interlude-", "").Substring(1)
+        let incoming = release.tag_name.Replace("MiaouVSRG-", "").Substring(1)
         latest_version_name <- incoming
 
         let pcurrent = parse_version current
@@ -130,7 +130,7 @@ module Updates =
 
     let check_for_updates () : unit =
         WebServices.download_json (
-            "https://api.github.com/repos/YAVSRG/YAVSRG/releases/latest",
+            "https://api.github.com/repos/MiaouVSRG/miaouVSRG/releases/latest",
             function
             | WebResult.Ok(d: GithubRelease) -> handle_update d
             | _ -> ()

@@ -231,7 +231,7 @@ module Skins =
     let private DEFAULT_NOTESKIN_META =
         {
             Name = "miaoum"
-            Author = "Percyqaz"
+            Author = "Kyun"
             Editor = None
         }
 

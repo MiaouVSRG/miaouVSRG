@@ -41,7 +41,17 @@ module SoundEffect =
 
         Bass.ChannelPlay(fx.ChannelID, true) |> display_bass_error
 
+    let stop (fx: SoundEffect) : unit = 
+        Bass.ChannelSetAttribute(fx.ChannelID, ChannelAttribute.Volume, 0)
+        |> display_bass_error
+
+        Bass.ChannelStop fx.ChannelID |> display_bass_error
+
 type SoundEffect with
     member this.Play() : unit =
         if this.ID <> 0 then
             SoundEffect.play this 1.0
+
+    member this.Stop() : unit = 
+        if this.ID <> 0 then
+            SoundEffect.stop this
