@@ -29,26 +29,30 @@ type LobbySettingsPage(lobby: Lobby) =
     let host_rotation = Setting.simple settings.HostRotation
     let auto_countdown = Setting.simple settings.AutomaticRoundCountdown
 
-    override this.Content() =
-        page_container()
-        |+ PageTextEntry(%"lobby.name", name).Pos(0)
-        |+ PageSetting(%"lobby.host_rotation", Checkbox host_rotation)
-            .Help(Help.Info("lobby.host_rotation"))
-            .Pos(3)
-        |+ PageSetting(%"lobby.auto_countdown", Checkbox auto_countdown)
-            .Help(Help.Info("lobby.auto_countdown"))
-            .Pos(5)
-        :> Widget
-
-    override this.Title = %"lobby"
-
-    override this.OnClose() =
+    member this.SaveChanges() =
         lobby.ChangeSettings
             {
                 Name = name.Value
                 HostRotation = host_rotation.Value
                 AutomaticRoundCountdown = auto_countdown.Value
             }
+
+    override this.Content() =
+        this.OnClose(this.SaveChanges)
+
+        page_container()
+            .With(
+                PageTextEntry(%"lobby.name", name)
+                    .Pos(0),
+                PageSetting(%"lobby.host_rotation", Checkbox host_rotation)
+                    .Help(Help.Info("lobby.host_rotation"))
+                    .Pos(3),
+                PageSetting(%"lobby.auto_countdown", Checkbox auto_countdown)
+                    .Help(Help.Info("lobby.auto_countdown"))
+                    .Pos(5)
+            )
+
+    override this.Title = %"lobby"
 
 type LobbyUI(lobby: Lobby) =
     inherit Container(NodeType.None)
@@ -121,7 +125,7 @@ type LobbyUI(lobby: Lobby) =
                 <| fun info ->
                     if
                         Screen.change_new
-                            (fun () -> PlayScreenMultiplayer.multiplayer_screen(info, lobby))
+                            (fun () -> MultiplayerScreen.Create(info, lobby))
                             ScreenType.Play
                             Transitions.EnterGameplayFadeAudio
                         |> not
@@ -134,18 +138,18 @@ type LobbyUI(lobby: Lobby) =
                 SelectedChart.if_loaded
                 <| fun info ->
 
-                let replay : OnlineReplayProvider = OnlineReplayProvider()
+                let replay : OnlineReplay = OnlineReplay()
                 let scoring = ScoreProcessor.create Rulesets.current info.WithMods.Keys replay info.WithMods.Notes SelectedChart.rate.Value
                 let replay_info =
                     {
                         Replay = replay
                         ScoreProcessor = scoring
                         GetScoreInfo = fun () ->
-                            if not (replay :> IReplayProvider).Finished then
+                            if not (replay :> IReplay).Finished then
                                 replay.Finish()
                             scoring.Update Time.infinity
 
-                            let replay_data = (replay :> IReplayProvider).GetFullReplay()
+                            let replay_data = (replay :> IReplay).GetFullReplay()
 
                             {
                                 ChartMeta = info.ChartMeta
@@ -177,7 +181,7 @@ type LobbyUI(lobby: Lobby) =
                 then
                     if
                         Screen.change_new
-                            (fun () -> Spectate.spectate_screen (info, username, replay_info, lobby))
+                            (fun () -> SpectateScreen.Create(info, username, replay_info, lobby))
                             ScreenType.Replay
                             Transitions.Default
                         |> not

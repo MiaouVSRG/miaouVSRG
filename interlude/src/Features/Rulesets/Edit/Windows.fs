@@ -96,7 +96,7 @@ type private EditWindowsPage(judgements: Judgement array, windows: Setting<(Game
                             .Position(Position.ShrinkL(ADD_REMOVE_BUTTON_WIDTH).GridX(1, 2, 15.0f))
                             .Conditional(fun () -> windows.[i].Value.IsSome)
                         |> add_entry,
-                        
+
                         NumberEntry.Create(late_window, "ms")
                             .Position(Position.ShrinkL(ADD_REMOVE_BUTTON_WIDTH).GridX(2, 2, 15.0f))
                             .Conditional(fun () -> windows.[i].Value.IsSome)
@@ -117,10 +117,7 @@ type private EditWindowsPage(judgements: Judgement array, windows: Setting<(Game
 
             container.Add (PageSetting(j.Name, window_editor))
 
-        page_container()
-        |+ ScrollContainer(container)
-            .Pos(0, PAGE_BOTTOM)
-        :> Widget
+        page_container().With(ScrollContainer(container).Pos(0, PAGE_BOTTOM))
 
     override this.Update(elapsed_ms, moved) =
         base.Update(elapsed_ms, moved)
@@ -132,11 +129,20 @@ type private EditWindowsPage(judgements: Judgement array, windows: Setting<(Game
             | _ -> ()
 
     override this.Title = %"rulesets.edit.windows"
-    override this.OnClose() = ()
 
-module EditWindows =
+    static member NoteWindowsPage(ruleset: Setting<Ruleset>) : Page =
+        let new_judgements = ruleset.Value.Judgements |> Array.copy
+        EditWindowsPage(
+            new_judgements,
+            Array.init new_judgements.Length (fun i ->
+                Setting.make
+                    (fun v -> new_judgements.[i] <- { new_judgements.[i] with TimingWindows = v })
+                    (fun () -> new_judgements.[i].TimingWindows)
+            )
+        )
+            .WithOnClose(fun () -> ruleset.Value <- { ruleset.Value with Judgements = new_judgements })
 
-    let note_windows (ruleset: Setting<Ruleset>) : Page =
+    static member NoteWindowsAsReleaseWindows(ruleset: Setting<Ruleset>) : Page =
         let new_judgements = ruleset.Value.Judgements |> Array.copy
         { new EditWindowsPage(
                 new_judgements,
@@ -146,24 +152,11 @@ module EditWindows =
                         (fun () -> new_judgements.[i].TimingWindows)
                 )
             ) with
-            override this.OnClose() = ruleset.Value <- { ruleset.Value with Judgements = new_judgements }
-        }
-
-    let notes_windows_as_release_windows (ruleset: Setting<Ruleset>) : Page =
-        let new_judgements = ruleset.Value.Judgements |> Array.copy
-        { new EditWindowsPage(
-                new_judgements,
-                Array.init new_judgements.Length (fun i ->
-                    Setting.make
-                        (fun v -> new_judgements.[i] <- { new_judgements.[i] with TimingWindows = v })
-                        (fun () -> new_judgements.[i].TimingWindows)
-                )
-            ) with
-            override this.OnClose() = ruleset.Value <- { ruleset.Value with Judgements = new_judgements }
             override this.Title = %"rulesets.mechanics.release_windows"
         }
+            .WithOnClose(fun () -> ruleset.Value <- { ruleset.Value with Judgements = new_judgements })
 
-    let release_windows (judgements: Judgement array, windows: (GameplayTime * GameplayTime) option array) : Page =
+    static member ReleaseWindows(judgements: Judgement array, windows: (GameplayTime * GameplayTime) option array) : Page =
         { new EditWindowsPage(
                 judgements,
                 Array.init windows.Length (fun i ->

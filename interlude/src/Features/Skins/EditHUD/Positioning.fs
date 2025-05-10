@@ -399,6 +399,8 @@ and Positioner(element: HudElement, ctx: PositionerContext) =
 
         increment <- if ALT.Held() then 1.0f else 5.0f
 
+        base.Update(elapsed_ms, moved)
+
         match dragging_from with
         | Some(x, y) ->
             let current = position.Value
@@ -418,15 +420,15 @@ and Positioner(element: HudElement, ctx: PositionerContext) =
                 dragging_from <- None
                 save_pos ()
         | None ->
-            if hover && Mouse.left_clicked () then
-                if this.IsSelectedElement then
-                    dragging_from <- Some(Mouse.pos ())
-                else
-                    ctx.Select element
-            elif hover && Mouse.right_clicked () && HudElement.can_configure element then
-                show_menu element (fun () -> ctx.Recreate element)
 
-        base.Update(elapsed_ms, moved)
+            if hover && this.IsSelectedElement && Mouse.left_clicked () then
+                dragging_from <- Some(Mouse.pos ())
+            elif hover && this.IsSelectedElement && Mouse.right_clicked () && HudElement.can_configure element then
+                ctx.ConfigureElement()
+            elif hover && ctx.Selected.IsNone && Mouse.left_clicked () then
+                ctx.Select element
+            elif not hover && this.IsSelectedElement && Mouse.left_clicked() then
+                ctx.ClearSelection()
 
     override this.Draw() =
 
@@ -570,6 +572,12 @@ and PositionerContext =
             Style.click.Play()
             this.UndoHistory <- xs
         | _ -> ()
+
+    member this.ConfigureElement() =
+        match this.Selected with
+        | Some element ->
+            show_menu element (fun () -> GameThread.defer (fun () -> this.Recreate element))
+        | None -> ()
 
     member this.RemoveElement() =
         match this.Selected with

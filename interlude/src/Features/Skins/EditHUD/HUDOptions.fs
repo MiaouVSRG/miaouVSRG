@@ -18,7 +18,7 @@ type EditHUDPage(ctx: PositionerContext) =
     let author = Setting.simple meta.Author
     let editor = Setting.simple (meta.Editor |> Option.defaultValue "")
 
-    let preview = SkinPreview(SkinPreview.RIGHT_HAND_SIDE(0.35f).TranslateY(-100.0f))
+    let preview = new SkinPreview(SkinPreview.RIGHT_HAND_SIDE(0.35f).TranslateY(-100.0f))
 
     let textures_tab = TextureGrid.HUD(hud)
     let problems_tab = ProblemList.HUD(hud)
@@ -58,7 +58,19 @@ type EditHUDPage(ctx: PositionerContext) =
         textures_tab.Refresh()
         problems_tab.Refresh()
 
+    member this.SaveChanges() =
+        Skins.save_skin_meta hud_id
+            {
+                Name = name.Value.Trim()
+                Author = author.Value.Trim()
+                Editor = let e = editor.Value.Trim() in if e = "" then None else Some e
+            }
+        ctx.CreateAll()
+
     override this.Content() =
+        this.OnClose(this.SaveChanges)
+        this.DisposeOnDestroy(preview)
+
         refresh ()
 
         let tab_view_container = SwapContainer(elements_tab)
@@ -87,17 +99,7 @@ type EditHUDPage(ctx: PositionerContext) =
         ProblemList.loader.Join()
 
     override this.Title = meta.Name
-    override this.OnDestroy() = preview.Destroy()
 
     override this.OnReturnFromNestedPage() =
         refresh ()
         preview.Refresh()
-
-    override this.OnClose() =
-        Skins.save_skin_meta hud_id
-            {
-                Name = name.Value.Trim()
-                Author = author.Value.Trim()
-                Editor = let e = editor.Value.Trim() in if e = "" then None else Some e
-            }
-        ctx.CreateAll()

@@ -3,10 +3,8 @@
 open System
 open System.IO
 open System.IO.Compression
-open Percyqaz.Common
 open Prelude
 open Prelude.Charts
-open Prelude.Mods
 
 // "Replay" data is an array of timestamps + bitmaps of which keys are pressed down at that moment
 // A new timestamp + bitmap is recorded when the state of one of the keys change; every timestamp corresponds to at least 1 key becoming pressed or unpressed
@@ -18,8 +16,8 @@ open Prelude.Mods
 // ChartTime is conventionally used as the type signature instead of Time when the time is relative to the first note instead of to the start of the audio file
 type ChartTime = float32<ms>
 
-type ReplayRow = (struct (ChartTime * Bitmask))
-type ReplayData = ReplayRow array
+type ReplayFrame = (struct (ChartTime * Bitmask))
+type ReplayData = ReplayFrame array
 
 module Replay =
 
@@ -58,7 +56,7 @@ module Replay =
 
         output
 
-    let decompress_bytes (data: byte array) =
+    let decompress_bytes (data: byte array) : ReplayData =
         use stream = new MemoryStream(data)
         decompress_from stream
 

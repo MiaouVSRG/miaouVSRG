@@ -13,13 +13,13 @@ open Interlude.Features.Online
 open Interlude.Features.Play
 open Interlude.Features.Play.HUD
 
-module Spectate =
+type SpectateScreen =
 
-    let spectate_screen (info: LoadedChartInfo, username: string, replay_info: LobbyPlayerReplayInfo, lobby: Lobby) =
+    static member Create(info: LoadedChartInfo, username: string, replay_info: LobbyPlayerReplayInfo, lobby: Lobby) : Screen =
 
         let mutable currently_spectating = username
         let mutable scoring = replay_info.ScoreProcessor
-        let mutable replay_data : OnlineReplayProvider = replay_info.Replay :?> OnlineReplayProvider
+        let mutable replay_data : OnlineReplay = replay_info.Replay :?> OnlineReplay
 
         let cycle_spectator (screen: IPlayScreen) =
             let users_available_to_spectate =
@@ -36,7 +36,7 @@ module Spectate =
             | Some replay_info ->
                 currently_spectating <- next_user
                 scoring <- replay_info.ScoreProcessor
-                replay_data <- replay_info.Replay :?> OnlineReplayProvider
+                replay_data <- replay_info.Replay :?> OnlineReplay
                 Song.seek (replay_data.Time() - MULTIPLAYER_REPLAY_DELAY_MS * 1.0f<ms>)
                 screen.State.ChangeScoring scoring
             | None -> Logging.Warn "Failed to switch to replay data for %s" next_user
@@ -70,11 +70,13 @@ module Spectate =
                     (fun (hud_config, state) -> MultiplayerScoreTracker(hud_config, state, lobby.Replays))
 
                 this
-                |* ControlOverlay(
-                    info,
-                    ignore,
-                    (fun () -> currently_spectating),
-                    fun () -> cycle_spectator this
+                    .Add(
+                        SpectateOverlay(
+                            info,
+                            ignore,
+                            (fun () -> currently_spectating),
+                            fun () -> cycle_spectator this
+                        )
                 )
 
             override this.OnEnter(prev) =

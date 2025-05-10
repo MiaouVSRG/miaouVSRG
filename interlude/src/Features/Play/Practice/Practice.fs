@@ -16,11 +16,11 @@ open Interlude.Features.Online
 open Interlude.Features.Play.HUD
 open Interlude.Features.Play.Practice
 
-module PracticeScreen =
+type PracticeScreen =
 
-    let UNPAUSE_NOTE_LEADWAY = 800.0f<ms / rate>
+    static let UNPAUSE_NOTE_LEADWAY = 800.0f<ms / rate>
 
-    let practice_screen (info: LoadedChartInfo, start_at: Time) =
+    static member Create(info: LoadedChartInfo, start_at: Time) : Screen =
 
         let mutable liveplay = Unchecked.defaultof<_>
         let mutable scoring = Unchecked.defaultof<_>
@@ -42,7 +42,7 @@ module PracticeScreen =
         let FIRST_NOTE = info.WithMods.FirstNote
 
         let reset_to_practice_point () =
-            liveplay <- LiveReplayProvider FIRST_NOTE
+            liveplay <- LiveReplay FIRST_NOTE
 
             scoring <-
                 ScoreProcessor.create Rulesets.current info.WithMods.Keys liveplay info.WithMods.Notes SelectedChart.rate.Value
@@ -134,9 +134,10 @@ module PracticeScreen =
                     if not state.Paused.Value then pause this
                     LocalOffsetPage(
                         (match state.SyncSuggestions with Some s -> s.AudioOffset | None -> state.SaveData.Offset),
-                        LocalOffset.offset_setting state.SaveData,
-                        fun () -> restart this
-                    ).Show()
+                        LocalOffset.offset_setting state.SaveData
+                    )
+                        .WithOnClose(fun () -> restart this)
+                        .Show()
 
                 elif (%%"accept_offset").Pressed() then
                     if state.Paused.Value then
@@ -167,7 +168,7 @@ module PracticeScreen =
                     else
                         Screen.back Transitions.Default |> ignore
 
-                elif not (liveplay :> IReplayProvider).Finished then
+                elif not (liveplay :> IReplay).Finished then
                     Input.pop_gameplay now binds (
                         fun column time is_release ->
                             if is_release then
@@ -175,7 +176,7 @@ module PracticeScreen =
                             else
                                 input_key_state <- Bitmask.set_key column input_key_state
 
-                            liveplay.Add(time, input_key_state)
+                            liveplay.AddFrame(time, input_key_state)
                     )
 
                     this.State.Scoring.Update chart_time

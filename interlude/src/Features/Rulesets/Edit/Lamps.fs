@@ -16,33 +16,7 @@ type EditLampPage(ruleset: Setting<Ruleset>, id: int) =
     let judgement_type = Setting.simple (match lamp.Requirement with LampRequirement.ComboBreaksAtMost _ -> -1 | LampRequirement.JudgementAtMost (j, _) -> j)
     let judgement_threshold = Setting.simple (match lamp.Requirement with LampRequirement.ComboBreaksAtMost n -> n | LampRequirement.JudgementAtMost (_, n) -> min 99 n)
 
-    override this.Content() =
-        page_container()
-        |+ PageTextEntry(%"rulesets.lamp.name", name)
-            .Pos(0)
-        |+ PageSetting(%"rulesets.lamp.color", ColorPicker(%"rulesets.lamp.color", color, false))
-            .Pos(2)
-        |+ PageSetting(%"rulesets.lamp.requirement",
-            NavigationContainer.Row()
-            |+ SelectDropdown(
-                seq {
-                    for i, j in ruleset.Value.Judgements |> Array.indexed do
-                        yield i, j.Name
-                    yield -1, "Combo breaks"
-                }
-                |> Array.ofSeq,
-                judgement_type
-            )
-                .Position(Position.GridX(1, 2, 200.0f))
-            |+ Text("<=")
-            |+ Selector([|99, "99"; 9, "9"; 1, "1"; 0, "0";|], judgement_threshold)
-                .Position(Position.GridX(2, 2, 200.0f))
-        )
-            .Pos(4)
-        :> Widget
-
-    override this.Title = lamp.Name
-    override this.OnClose() =
+    member this.SaveChanges() =
         let new_lamps = ruleset.Value.Lamps |> Array.copy
         new_lamps.[id] <-
             {
@@ -61,6 +35,43 @@ type EditLampPage(ruleset: Setting<Ruleset>, id: int) =
                     |> Array.sortByDescending (fun l -> l.Requirement.SortKey)
             }
 
+    override this.Content() =
+        this.OnClose(this.SaveChanges)
+
+        page_container()
+            .With(
+                PageTextEntry(%"rulesets.lamp.name", name)
+                    .Pos(0),
+                PageSetting(%"rulesets.lamp.color",
+                    ColorPicker(%"rulesets.lamp.color", color, false)
+                        .Preview(name.get_Value)
+                )
+                    .Pos(2),
+                PageSetting(%"rulesets.lamp.requirement",
+                    NavigationContainer.Row()
+                        .With(
+                            SelectDropdown(
+                                seq {
+                                    for i, j in ruleset.Value.Judgements |> Array.indexed do
+                                        yield i, j.Name
+                                    yield -1, "Combo breaks"
+                                }
+                                |> Array.ofSeq,
+                                judgement_type
+                            )
+                                .Position(Position.GridX(1, 2, 200.0f)),
+
+                            Text("<="),
+
+                            Selector([|99, "99"; 9, "9"; 1, "1"; 0, "0";|], judgement_threshold)
+                                .Position(Position.GridX(2, 2, 200.0f))
+                        )
+                )
+                    .Pos(4)
+            )
+
+    override this.Title = lamp.Name
+
 type EditLampsPage(ruleset: Setting<Ruleset>) =
     inherit Page()
 
@@ -68,20 +79,22 @@ type EditLampsPage(ruleset: Setting<Ruleset>) =
 
     let rec lamp_controls (i: int, l: Lamp) =
         NavigationContainer.Row()
-        |+ PageButton(l.Name, fun () -> EditLampPage(ruleset, i).Show())
-            .TextColor(l.Color)
-            .Position(Position.ShrinkR(PAGE_ITEM_HEIGHT))
-        |+ Button(
-            Icons.TRASH,
-            (fun () ->
-                ConfirmPage(
-                    [l.Name] %> "rulesets.lamp.confirm_delete",
-                    fun () -> delete_lamp i
-                ).Show()
+            .With(
+                PageButton(l.Name, fun () -> EditLampPage(ruleset, i).Show())
+                    .TextColor(l.Color)
+                    .Position(Position.ShrinkR(PAGE_ITEM_HEIGHT)),
+                Button(
+                    Icons.TRASH,
+                    (fun () ->
+                        ConfirmPage(
+                            [l.Name] %> "rulesets.lamp.confirm_delete",
+                            fun () -> delete_lamp i
+                        ).Show()
+                    )
+                )
+                    .TextColor(Colors.red_accent)
+                    .Position(Position.SliceR(PAGE_ITEM_HEIGHT))
             )
-        )
-            .TextColor(Colors.red_accent)
-            .Position(Position.SliceR(PAGE_ITEM_HEIGHT))
 
     and refresh() =
         container.Clear()
@@ -109,5 +122,4 @@ type EditLampsPage(ruleset: Setting<Ruleset>) =
             .Position(Position.Shrink(PAGE_MARGIN_X, PAGE_MARGIN_Y).SliceL(PAGE_ITEM_WIDTH))
 
     override this.Title = %"rulesets.edit.lamps"
-    override this.OnClose() = ()
     override this.OnReturnFromNestedPage() = refresh()

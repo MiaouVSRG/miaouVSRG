@@ -59,7 +59,7 @@ type GameplayEvent =
 /// These raw events are converted to judgements, points, combo changes etc according to the ruleset and then output as `GameplayEvent<GameplayAction>` event markers
 /// `GameplayEvent<GameplayAction>` event markers are subscribable and exposed as a list, they power everything the gameplay HUD, score screen and playfield display in the client
 
-type ScoreProcessor(ruleset: Ruleset, keys: int, replay: IReplayProvider, notes: TimeArray<NoteRow>, rate: Rate) =
+type ScoreProcessor(ruleset: Ruleset, keys: int, replay: IReplay, notes: TimeArray<NoteRow>, rate: Rate) =
     inherit GameplayEventProcessor(ruleset, keys, replay, notes, rate)
 
     let hit_events = ResizeArray<GameplayEvent>()
@@ -140,7 +140,7 @@ type ScoreProcessor(ruleset: Ruleset, keys: int, replay: IReplayProvider, notes:
     member this.OnEvent : IEvent<GameplayEvent> = on_event
 
     /// Throws an exception if used on a live/online replay
-    member this.Recreate(ruleset: Ruleset) = ScoreProcessor(ruleset, keys, replay.GetFullReplay() |> StoredReplayProvider, notes, rate)
+    member this.Recreate(ruleset: Ruleset) = ScoreProcessor(ruleset, keys, replay.GetFullReplay() |> StoredReplay, notes, rate)
     member this.Recreate() = this.Recreate(ruleset)
 
     member private this.ProcessHit(delta: GameplayTime, is_missed: bool) : ComboAction * GameplayAction =
@@ -360,13 +360,13 @@ type ScoreProcessor(ruleset: Ruleset, keys: int, replay: IReplayProvider, notes:
 
 module ScoreProcessor =
 
-    let create (ruleset: Ruleset) (keys: int) (replay: IReplayProvider) (notes: TimeArray<NoteRow>) (rate: Rate) : ScoreProcessor =
+    let create (ruleset: Ruleset) (keys: int) (replay: IReplay) (notes: TimeArray<NoteRow>) (rate: Rate) : ScoreProcessor =
         ScoreProcessor(ruleset, keys, replay, notes, rate)
 
-    let run (ruleset: Ruleset) (keys: int) (replay: IReplayProvider) (notes: TimeArray<NoteRow>) (rate: Rate) : ScoreProcessor =
+    let run (ruleset: Ruleset) (keys: int) (replay: IReplay) (notes: TimeArray<NoteRow>) (rate: Rate) : ScoreProcessor =
         let scoring = ScoreProcessor(ruleset, keys, replay, notes, rate)
         scoring.Update Time.infinity
         scoring
 
     let create_dummy (chart: ModdedChart) : ScoreProcessor =
-        create SC_J4 chart.Keys (StoredReplayProvider Array.empty) chart.Notes 1.0f<rate>
+        create SC_J4 chart.Keys (StoredReplay Array.empty) chart.Notes 1.0f<rate>

@@ -19,22 +19,21 @@ module Skins =
 
         override this.Content() =
             page_container()
-            |+ PageSetting(%"etterna_skin_import.isarrows", Checkbox is_arrows)
-                .Pos(2)
-            |+
-                match existing_folder with
-                | Some folder ->
-                    [
-                        Text([folder] %> "etterna_skin_import.delete_prompt")
-                            .Align(Alignment.LEFT)
-                            .Position(page_position(5, 2, PageWidth.Full).Shrink(Style.PADDING))
-                        PageSetting(%"etterna_skin_import.delete_existing", Checkbox delete_existing).Pos(7)
-                    ]
-                | None -> []
-            |+ PageButton
-                .Once(
-                    %"etterna_skin_import.confirm",
-                    fun () ->
+                .With(
+                    PageSetting(%"etterna_skin_import.isarrows", Checkbox is_arrows)
+                        .Pos(2)
+                )
+                .WithConditional(
+                    existing_folder.IsSome,
+
+                    Text([existing_folder.Value] %> "etterna_skin_import.delete_prompt")
+                        .Align(Alignment.LEFT)
+                        .TextPos(5),
+                    PageSetting(%"etterna_skin_import.delete_existing", Checkbox delete_existing)
+                        .Pos(7)
+                )
+                .With(
+                    PageButton.Once(%"etterna_skin_import.confirm", fun () ->
                         try
                             StepmaniaSkinConverter.convert_to_skin
                                 source_path
@@ -58,19 +57,19 @@ module Skins =
                             Logging.Error "Error while converting to skin: %O" err
 
                         Menu.Back()
+                    )
+                        .Pos(if existing_folder.IsSome then 10 else 5),
+
+                    CalloutCard(
+                        Callout.Normal
+                            .Icon(Icons.INFO)
+                            .Title(%"etterna_skin_import.disclaimer.title")
+                            .Body(%"etterna_skin_import.disclaimer.body")
+                    )
+                        .Pos(15)
                 )
-                .Pos(if existing_folder.IsSome then 10 else 5)
-            |+ CalloutCard(
-                Callout.Normal
-                    .Icon(Icons.INFO)
-                    .Title(%"etterna_skin_import.disclaimer.title")
-                    .Body(%"etterna_skin_import.disclaimer.body")
-            )
-                .Pos(15)
-            :> Widget
 
         override this.Title = Path.GetFileName source_path
-        override this.OnClose() = ()
 
     let import_stepmania_noteskin (path: string) : unit =
         let id = Regex("[^a-zA-Z0-9_-]").Replace(Path.GetFileName(path), "")

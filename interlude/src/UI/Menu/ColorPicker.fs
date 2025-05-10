@@ -1,11 +1,12 @@
 ﻿namespace Interlude.UI
 
+open System.Runtime.CompilerServices
 open Percyqaz.Common
 open Percyqaz.Flux.Graphics
 open Percyqaz.Flux.UI
 open Prelude
 
-type ColorPickerPage(title: string, color: Setting<Color>, allow_alpha: bool, on_close: unit -> unit) =
+type ColorPickerPage(title: string, color: Setting<Color>, allow_alpha: bool, draw_preview: Rect -> Color -> unit) =
     inherit Page()
 
     let mutable hex = color.Value.ToHex()
@@ -72,52 +73,52 @@ type ColorPickerPage(title: string, color: Setting<Color>, allow_alpha: bool, on
     let saturation = Setting.make (fun x -> s <- x; update_hsv()) (fun () -> s) |> Setting.bound (0.0f, 1.0f)
     let value = Setting.make (fun x -> v <- x; update_hsv()) (fun () -> v) |> Setting.bound (0.0f, 1.0f)
 
-    let red_slider =
-        PageSetting("Red",
+    member private this.RedSlider() =
+        PageSetting(%"color.red",
             { new Slider(red, Format = sprintf "%.0f", Step = 5.0f) with
                 override this.DrawBar(bounds, percentage) =
                     draw_bar (fun x -> Color.FromArgb(int (x * 255.0f), int g, int b)) (bounds, percentage)
             }
         )
-    let green_slider =
-        PageSetting("Green",
+    member private this.GreenSlider() =
+        PageSetting(%"color.green",
             { new Slider(green, Format = sprintf "%.0f", Step = 5.0f) with
                 override this.DrawBar(bounds, percentage) =
                     draw_bar (fun x -> Color.FromArgb(int r, int (x * 255.0f), int b)) (bounds, percentage)
             }
         )
-    let blue_slider =
-        PageSetting("Blue",
+    member private this.BlueSlider() =
+        PageSetting(%"color.blue",
             { new Slider(blue, Format = sprintf "%.0f", Step = 5.0f) with
                 override this.DrawBar(bounds, percentage) =
                     draw_bar (fun x -> Color.FromArgb(int r, int g, int (x * 255.0f))) (bounds, percentage)
             }
         )
 
-    let alpha_slider =
-        PageSetting("Alpha",
+    member private this.AlphaSlider() =
+        PageSetting(%"color.alpha",
             { new Slider(alpha, Format = sprintf "%.0f", Step = 5.0f) with
                 override this.DrawBar(bounds, percentage) =
                     draw_bar (fun x -> Color.FromArgb(int (x * 255.0f), int r, int g, int b)) (bounds, percentage)
             }
         )
 
-    let hue_slider =
-        PageSetting("Hue",
+    member private this.HueSlider() =
+        PageSetting(%"color.hue",
             { new Slider(hue, Format = sprintf "%.0f'", Step = 5.0f) with
                 override this.DrawBar(bounds, percentage) =
                     draw_bar (fun x -> Color.FromHsv(x, s, v)) (bounds, percentage)
             }
         )
-    let saturation_slider =
-        PageSetting("Saturation",
+    member private this.SaturationSlider() =
+        PageSetting(%"color.saturation",
             { new Slider(saturation, Format = fun v -> sprintf "%.0f%%" (v * 100.0f)) with
                 override this.DrawBar(bounds, percentage) =
                     draw_bar (fun x -> Color.FromHsv(h, x, v)) (bounds, percentage)
             }
         )
-    let value_slider =
-        PageSetting("Value",
+    member private this.ValueSlider() =
+        PageSetting(%"color.value",
             { new Slider(value, Format = fun v -> sprintf "%.0f%%" (v * 100.0f)) with
                 override this.DrawBar(bounds, percentage) =
                     draw_bar (fun x -> Color.FromHsv(h, s, x)) (bounds, percentage)
@@ -126,34 +127,42 @@ type ColorPickerPage(title: string, color: Setting<Color>, allow_alpha: bool, on
 
     override this.Content() =
         page_container()
-        |+ PageSetting("Hex", NumberEntry.Create(hex_color_setting)).Pos(0)
-        |+ red_slider.Pos(3)
-        |+ green_slider.Pos(5)
-        |+ blue_slider.Pos(7)
-        |> fun c ->
-            if allow_alpha then
-                c
-                |+ alpha_slider.Pos(10)
-                |+ hue_slider.Pos(13)
-                |+ saturation_slider.Pos(15)
-                |+ value_slider.Pos(17)
-            else
-                c
-                |+ hue_slider.Pos(10)
-                |+ saturation_slider.Pos(12)
-                |+ value_slider.Pos(14)
-        :> Widget
+            .With(
+                PageSetting(%"color.hex", NumberEntry.Create(hex_color_setting)).Pos(0),
+                this.RedSlider().Pos(3),
+                this.GreenSlider().Pos(5),
+                this.BlueSlider().Pos(7)
+            )
+            .WithConditional(
+                allow_alpha,
+                this.AlphaSlider().Pos(10),
+                this.HueSlider().Pos(13),
+                this.SaturationSlider().Pos(15),
+                this.ValueSlider().Pos(17)
+            )
+            .WithConditional(
+                not allow_alpha,
+                this.HueSlider().Pos(10),
+                this.SaturationSlider().Pos(12),
+                this.ValueSlider().Pos(14)
+            )
+
+    override this.Draw() =
+        let preview_box = this.Bounds.Shrink(PAGE_MARGIN_X, PAGE_MARGIN_Y).ShrinkL(PAGE_ITEM_WIDTH).ShrinkX(30.0f).SliceT(PAGE_ITEM_HEIGHT)
+        draw_preview preview_box color.Value
+        base.Draw()
 
     override this.Title = title
-    override this.OnClose() = on_close()
 
 type ColorPicker(label: string, color: Setting<Color>, allow_alpha: bool) as this =
     inherit Container(NodeType.Button(fun _ -> this.Edit()))
 
     let mutable hex = color.Value.ToHex()
 
-    override this.Init (parent: Widget) =
-        this |* MouseListener().Button(this)
+    member val Preview: Rect -> Color -> unit = Render.rect with get, set
+
+    override this.Init(parent: Widget) =
+        this.Add(MouseListener().Button(this))
         base.Init parent
 
     override this.OnFocus(by_mouse: bool) =
@@ -167,4 +176,17 @@ type ColorPicker(label: string, color: Setting<Color>, allow_alpha: bool) as thi
 
     member this.Edit() =
         Style.click.Play()
-        ColorPickerPage(label, color, allow_alpha, fun () -> hex <- color.Value.ToHex()).Show()
+        ColorPickerPage(label, color, allow_alpha, this.Preview)
+            .WithOnClose(fun () -> hex <- color.Value.ToHex())
+            .Show()
+
+[<Extension>]
+type ColorPickerExtensions =
+    [<Extension>]
+    static member Preview(this: ColorPicker, preview: Rect -> Color -> unit) =
+        this.Preview <- preview
+        this
+    [<Extension>]
+    static member Preview(this: ColorPicker, text: unit -> string) =
+        this.Preview <- fun bounds color -> Text.fill_b(Style.font, text(), bounds, (color, Colors.shadow_2), Alignment.CENTER)
+        this

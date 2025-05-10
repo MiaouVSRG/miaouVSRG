@@ -15,20 +15,7 @@ type EditGradePage(ruleset: Setting<Ruleset>, id: int) =
     let color = Setting.simple grade.Color
     let acc_required = float32 grade.Accuracy |> Setting.bounded (0.0f, 1.0f) |> Setting.roundf 6
 
-    override this.Content() =
-        page_container()
-        |+ PageTextEntry(%"rulesets.grade.name", name)
-            .Pos(0)
-        |+ PageSetting(%"rulesets.grade.color", ColorPicker(%"rulesets.grade.color", color, false))
-            .Pos(2)
-        |+ PageSetting(%"rulesets.grade.accuracy",
-            Slider(acc_required, Format = (fun v -> sprintf "%.4f%%" (v * 100.0f)), Step = 0.001f)
-        )
-            .Pos(4)
-        :> Widget
-
-    override this.Title = grade.Name
-    override this.OnClose() =
+    member this.SaveChanges() =
         let new_grades = ruleset.Value.Grades |> Array.copy
         new_grades.[id] <- { Name = name.Value.Trim(); Color = color.Value; Accuracy = System.Math.Round(float acc_required.Value, 6) }
         ruleset.Set
@@ -38,6 +25,26 @@ type EditGradePage(ruleset: Setting<Ruleset>, id: int) =
                     |> Array.sortBy (fun l -> l.Accuracy)
             }
 
+    override this.Content() =
+        this.OnClose(this.SaveChanges)
+
+        page_container()
+            .With(
+                PageTextEntry(%"rulesets.grade.name", name)
+                    .Pos(0),
+                PageSetting(%"rulesets.grade.color",
+                    ColorPicker(%"rulesets.grade.color", color, false)
+                        .Preview(name.get_Value)
+                )
+                    .Pos(2),
+                PageSetting(%"rulesets.grade.accuracy",
+                    Slider(acc_required, Format = (fun v -> sprintf "%.4f%%" (v * 100.0f)), Step = 0.001f)
+                )
+                    .Pos(4)
+            )
+
+    override this.Title = grade.Name
+
 type EditGradesPage(ruleset: Setting<Ruleset>) =
     inherit Page()
 
@@ -45,20 +52,22 @@ type EditGradesPage(ruleset: Setting<Ruleset>) =
 
     let rec grade_controls (i: int, g: Grade) =
         NavigationContainer.Row()
-        |+ PageButton(g.Name, fun () -> EditGradePage(ruleset, i).Show())
-            .TextColor(g.Color)
-            .Position(Position.ShrinkR(PAGE_ITEM_HEIGHT))
-        |+ Button(
-            Icons.TRASH,
-            (fun () ->
-                ConfirmPage(
-                    [g.Name] %> "rulesets.grade.confirm_delete",
-                    fun () -> delete_grade i
-                ).Show()
+            .With(
+                PageButton(g.Name, fun () -> EditGradePage(ruleset, i).Show())
+                    .TextColor(g.Color)
+                    .Position(Position.ShrinkR(PAGE_ITEM_HEIGHT)),
+                Button(
+                    Icons.TRASH,
+                    (fun () ->
+                        ConfirmPage(
+                            [g.Name] %> "rulesets.grade.confirm_delete",
+                            fun () -> delete_grade i
+                        ).Show()
+                    )
+                )
+                    .TextColor(Colors.red_accent)
+                    .Position(Position.SliceR(PAGE_ITEM_HEIGHT))
             )
-        )
-            .TextColor(Colors.red_accent)
-            .Position(Position.SliceR(PAGE_ITEM_HEIGHT))
 
     and refresh() =
         container.Clear()
@@ -86,5 +95,4 @@ type EditGradesPage(ruleset: Setting<Ruleset>) =
             .Position(Position.Shrink(PAGE_MARGIN_X, PAGE_MARGIN_Y).SliceL(PAGE_ITEM_WIDTH))
 
     override this.Title = %"rulesets.edit.grades"
-    override this.OnClose() = ()
     override this.OnReturnFromNestedPage() = refresh()

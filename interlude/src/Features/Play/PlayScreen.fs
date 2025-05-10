@@ -18,15 +18,15 @@ open Interlude.Features.Online
 open Interlude.Features.Score
 open Interlude.Features.Play.HUD
 
-module PlayScreen =
+type PlayScreen =
 
-    let SHOW_START_OVERLAY = true
+    static let SHOW_START_OVERLAY = true
 
-    let rec play_screen (info: LoadedChartInfo, pacemaker_ctx: PacemakerCreationContext) =
+    static member Create(info: LoadedChartInfo, pacemaker_ctx: PacemakerCreationContext) : Screen =
 
         let ruleset = Rulesets.current
         let first_note = info.WithMods.FirstNote
-        let liveplay = LiveReplayProvider first_note
+        let liveplay = LiveReplay first_note
 
         let scoring =
             ScoreProcessor.create ruleset info.WithMods.Keys liveplay info.WithMods.Notes SelectedChart.rate.Value
@@ -52,7 +52,7 @@ module PlayScreen =
         let retry () =
             if
                 Screen.change_new
-                    (fun () -> play_screen (info, pacemaker_ctx) :> Screen)
+                    (fun () -> PlayScreen.Create(info, pacemaker_ctx))
                     ScreenType.Play
                     Transitions.EnterGameplayFadeAudio
             then
@@ -72,7 +72,7 @@ module PlayScreen =
             if Gameplay.continue_endless_mode() then CURRENT_SESSION.PlaysQuit <- CURRENT_SESSION.PlaysQuit + 1
 
         let give_up () =
-            let is_giving_up_play = not (liveplay :> IReplayProvider).Finished && (Song.time() - first_note) / SelectedChart.rate.Value > 15000f<ms / rate>
+            let is_giving_up_play = not (liveplay :> IReplay).Finished && (Song.time() - first_note) / SelectedChart.rate.Value > 15000f<ms / rate>
 
             if is_giving_up_play then
                 liveplay.Finish()
@@ -86,7 +86,7 @@ module PlayScreen =
                                 Gameplay.score_info_from_gameplay
                                     info
                                     scoring
-                                    ((liveplay :> IReplayProvider).GetFullReplay())
+                                    ((liveplay :> IReplay).GetFullReplay())
                                     true
                             ScoreScreen(score_info, Gameplay.set_score true score_info info.SaveData, true)
                         )
@@ -98,7 +98,7 @@ module PlayScreen =
                         Gameplay.score_info_from_gameplay
                             info
                             scoring
-                            ((liveplay :> IReplayProvider).GetFullReplay())
+                            ((liveplay :> IReplay).GetFullReplay())
                             true
                     Gameplay.set_score true score_info info.SaveData |> ignore
                     Screen.back Transitions.LeaveGameplay
@@ -118,7 +118,7 @@ module PlayScreen =
                                 Gameplay.score_info_from_gameplay
                                     info
                                     scoring
-                                    ((liveplay :> IReplayProvider).GetFullReplay())
+                                    ((liveplay :> IReplay).GetFullReplay())
                                     true
 
                             (score_info, Gameplay.set_score false score_info info.SaveData, true)
@@ -144,7 +144,7 @@ module PlayScreen =
                                 Gameplay.score_info_from_gameplay
                                     info
                                     scoring
-                                    ((liveplay :> IReplayProvider).GetFullReplay())
+                                    ((liveplay :> IReplay).GetFullReplay())
                                     false
 
                             (score_info, Gameplay.set_score false score_info info.SaveData, true)
@@ -159,13 +159,15 @@ module PlayScreen =
                 view_score()
             else
                 fade_in.Target <- 0.5f
-                this |* FailOverlay(pacemaker_state, retry, view_score, skip_song)
+                this.Add(FailOverlay(pacemaker_state, retry, view_score, skip_song))
 
         let change_offset (state: PlayState) =
             Song.pause()
             liveplay.Finish()
             offset_manually_changed <- true
-            LocalOffsetPage(LocalOffset.get_automatic state info.SaveData, offset_setting, retry).Show()
+            LocalOffsetPage(LocalOffset.get_automatic state info.SaveData, offset_setting)
+                .WithOnClose(retry)
+                .Show()
 
         { new IPlayScreen(info.Chart, info.WithColors, pacemaker_state, scoring) with
             override this.AddWidgets() =
@@ -189,22 +191,24 @@ module PlayScreen =
                 if hud_config.CustomImageEnabled then add_widget hud_config.CustomImagePosition CustomImage
 
                 this
-                |+ HotkeyHoldAction(
-                    "retry",
-                    (if options.HoldToGiveUp.Value then ignore else retry),
-                    (if options.HoldToGiveUp.Value then retry else ignore)
-                )
-                |+ HotkeyHoldAction(
-                    "next_song",
-                    (if options.HoldToGiveUp.Value then ignore else skip_song),
-                    (if options.HoldToGiveUp.Value then skip_song else ignore)
-                )
-                |+ HotkeyHoldAction(
-                    "exit",
-                    (if options.HoldToGiveUp.Value then ignore else give_up),
-                    (if options.HoldToGiveUp.Value then give_up else ignore)
-                )
-                |* HotkeyListener("offset", fun () -> if not (liveplay :> IReplayProvider).Finished then change_offset this.State)
+                    .Add(
+                        HotkeyHoldAction(
+                            "retry",
+                            (if options.HoldToGiveUp.Value then ignore else retry),
+                            (if options.HoldToGiveUp.Value then retry else ignore)
+                        ),
+                        HotkeyHoldAction(
+                            "next_song",
+                            (if options.HoldToGiveUp.Value then ignore else skip_song),
+                            (if options.HoldToGiveUp.Value then skip_song else ignore)
+                        ),
+                        HotkeyHoldAction(
+                            "exit",
+                            (if options.HoldToGiveUp.Value then ignore else give_up),
+                            (if options.HoldToGiveUp.Value then give_up else ignore)
+                        ),
+                        HotkeyListener("offset", fun () -> if not (liveplay :> IReplay).Finished then change_offset this.State)
+                    )
 
             override this.OnEnter(previous) =
                 let now = Timestamp.now ()
@@ -242,7 +246,7 @@ module PlayScreen =
                 let now = Song.time_with_offset ()
                 let chart_time = now - first_note
 
-                if not (liveplay :> IReplayProvider).Finished && fade_in.Target = 1.0f then
+                if not (liveplay :> IReplay).Finished && fade_in.Target = 1.0f then
                     Input.pop_gameplay now binds (
                         fun column time is_release ->
                             if is_release then
@@ -250,7 +254,7 @@ module PlayScreen =
                             else
                                 key_state <- Bitmask.set_key column key_state
 
-                            liveplay.Add(time, key_state)
+                            liveplay.AddFrame(time, key_state)
                             liveplay_position <- max liveplay_position (time - first_note)
                     )
 

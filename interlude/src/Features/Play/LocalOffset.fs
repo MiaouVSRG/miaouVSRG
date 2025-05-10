@@ -55,7 +55,7 @@ module LocalOffset =
         | Some (c, offset) when chart = c -> offset
         | _ -> save_data.Offset
 
-type LocalOffsetPage(recommended_offset: Time, setting: Setting<float32<ms>>, on_close: unit -> unit) =
+type LocalOffsetPage(recommended_offset: Time, setting: Setting<float32<ms>>) =
     inherit Page()
 
     let offset_slider =
@@ -75,27 +75,27 @@ type LocalOffsetPage(recommended_offset: Time, setting: Setting<float32<ms>>, on
         setting.Set 0.0f<ms>
 
     override this.Content() =
+        this.OnClose(fun () -> Selection.up false)
+
         GameThread.defer (fun () -> offset_slider.Select false)
 
         page_container()
-        |+ PageSetting(
-            %"play.localoffset",
-            offset_slider
-        )
-            .Pos(0)
-        |+ Text(%"play.localoffset.slider_hint")
-            .Align(Alignment.LEFT)
-            .Pos(2, 1)
-        |+ PageButton(
-            [sprintf "%.0fms" recommended_offset] %> "play.localoffset.use_recommended",
-            apply_recommended
-        )
-            .Hotkey("accept_offset")
-            .Pos(3)
-        |+ PageButton(%"play.localoffset.reset", reset_offset)
-            .Hotkey("reset_offset")
-            .Pos(5)
-        :> Widget
+            .With(
+                PageSetting(%"play.localoffset", offset_slider)
+                    .Pos(0),
+                Text(%"play.localoffset.slider_hint")
+                    .Align(Alignment.LEFT)
+                    .Pos(2, 1),
+                PageButton(
+                    [sprintf "%.0fms" recommended_offset] %> "play.localoffset.use_recommended",
+                    apply_recommended
+                )
+                    .Hotkey("accept_offset")
+                    .Pos(3),
+                PageButton(%"play.localoffset.reset", reset_offset)
+                    .Hotkey("reset_offset")
+                    .Pos(5)
+            )
 
     override this.Update(elapsed_ms, moved) =
         if offset_slider.Selected && (%%"select").Pressed() then
@@ -104,7 +104,3 @@ type LocalOffsetPage(recommended_offset: Time, setting: Setting<float32<ms>>, on
         base.Update(elapsed_ms, moved)
 
     override this.Title = %"play.localoffset"
-
-    override this.OnClose() =
-        Selection.up false
-        on_close()

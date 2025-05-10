@@ -1,5 +1,6 @@
 ﻿namespace Interlude.UI
 
+open System
 open Percyqaz.Common
 open Percyqaz.Flux.Audio
 open Percyqaz.Flux.Graphics
@@ -32,14 +33,26 @@ type Page() as this =
     let mutable is_current = false
     let mutable content: Widget = Unchecked.defaultof<_>
 
-    member val Opacity = Animation.Fade(0.0f, Target = 1.0f) with get
+    let on_close_ev = Event<unit>()
+    let on_close = on_close_ev.Publish
+
+    let on_destroy_ev = Event<unit>()
+    let on_destroy = on_destroy_ev.Publish
+
+    member val Opacity : Animation.Fade = Animation.Fade(0.0f, Target = 1.0f) with get
+
+    member internal this.OnClose() : unit = on_close_ev.Trigger()
+    member internal this.OnDestroy() : unit = on_destroy_ev.Trigger()
+
+    member this.OnClose(action: unit -> unit) = on_close.Add action
+    member this.DisposeOnClose([<ParamArray>] resources: IDisposable array) = on_close.Add (fun () -> resources |> Array.iter _.Dispose())
+    member this.WithOnClose(action: unit -> unit) = this.OnClose(action); this
+
+    member this.DisposeOnDestroy([<ParamArray>] resources: IDisposable array) = on_destroy.Add (fun () -> resources |> Array.iter _.Dispose())
 
     member private this._content = content
 
     abstract member Title: string
-    abstract member OnClose: unit -> unit
-    abstract member OnDestroy: unit -> unit
-    default this.OnDestroy() = ()
 
     abstract member OnReturnFromNestedPage: unit -> unit
     default this.OnReturnFromNestedPage() = ()
@@ -114,8 +127,8 @@ type Page() as this =
         is_current <- false
 
     override this.Init(parent: Widget) =
-        content <- (NavigationContainer.Column() |+ this.Content() |+ this.Footer() |+ this.Header())
-        this |* content
+        content <- NavigationContainer.Column().With(this.Content(), this.Footer(), this.Header())
+        this.Add(content)
 
         this.Hide(this.Direction.Reverse)
         base.Init parent
@@ -308,4 +321,3 @@ type ConfirmPage(prompt: string, options: (string * (unit -> unit)) array) =
             } : Widget seq)
 
     override this.Title = %"confirm"
-    override this.OnClose() = ()
